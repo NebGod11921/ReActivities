@@ -1,3 +1,4 @@
+using Application.Activities.Queries;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -23,6 +24,10 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddMediatR(
+    x => x.RegisterServicesFromAssemblyContaining<GetActivityList>());
+builder.Services.AddAutoMapper(
+    typeof(GetActivityList).Assembly);
 
 
 var app = builder.Build();
