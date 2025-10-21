@@ -22,10 +22,10 @@ namespace Application.Activities.Queries
             {
                 var activity = await context.Activities.FindAsync([request.Id], cancellationToken);
 
-                if(activity == null)
-                {
-                    throw new Exception("Activity not found");
-                }
+                //if (activity == null)
+                //{
+                //    throw new Exception("Activity not found");
+                //}
 
                 return activity;
             }

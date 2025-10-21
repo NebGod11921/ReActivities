@@ -20,19 +20,19 @@ namespace Application.Activities.Queries
 
             public async Task<List<Activity>> Handle(Query request, CancellationToken cancellationToken)
             {
-                try
-                {
-                    for(int i = 0; i < 5; i++)
-                    {
-                        cancellationToken.ThrowIfCancellationRequested();
-                        //await Task.Delay(1000, cancellationToken);
-                        logger.LogInformation($"Task {i} has completed.");
-                    }
-                }
-                catch(Exception ex)
-                {
-                    logger.LogInformation("Task was cancelleds");
-                }
+                //try
+                //{
+                //    for(int i = 0; i < 5; i++)
+                //    {
+                //        cancellationToken.ThrowIfCancellationRequested();
+                //        //await Task.Delay(1000, cancellationToken);
+                //        logger.LogInformation($"Task {i} has completed.");
+                //    }
+                //}
+                //catch(Exception ex)
+                //{
+                //    logger.LogInformation("Task was cancelleds");
+                //}
 
 
 

@@ -6,7 +6,7 @@ import {useActivities} from "../../../lib/hooks/useActivities.ts";
 export default function ActivityList() {
     const {activities, isPending} = useActivities();
 
-    if(!activities || isPending)
+    if (!activities || isPending)
         return <Typography>Loading...</Typography>;
 
     return (
