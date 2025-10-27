@@ -1,4 +1,7 @@
+using API.Middleware;
 using Application.Activities.Queries;
+using Application.Core;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -25,9 +28,19 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(
-    x => x.RegisterServicesFromAssemblyContaining<GetActivityList>());
+    x => {
+        x.RegisterServicesFromAssemblyContaining<GetActivityList>();
+        x.AddOpenBehavior( typeof(ValidationBehavior<,>));
+
+
+
+    });
 builder.Services.AddAutoMapper(
     typeof(GetActivityList).Assembly);
+//Validations
+builder.Services.AddValidatorsFromAssemblyContaining<GetActivityList>();
+builder.Services.AddTransient<ExceptionMiddleware>(); // khoi tao khi can thiet
+
 
 
 var app = builder.Build();
@@ -40,6 +53,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseCors("AllowReactApp");
 
@@ -67,6 +82,7 @@ catch (Exception ex)
     logger.LogError(ex, "An error occurred during migration");
     throw;
 }
+
 
 
 

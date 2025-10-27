@@ -1,6 +1,7 @@
 ﻿using Application.Activities.DTOs;
 using AutoMapper;
 using Domain;
+using FluentValidation;
 using MediatR;
 using Persistence;
 using System;
@@ -22,9 +23,8 @@ namespace Application.Activities.Commands
         {
             public async Task<string> Handle(Command request, CancellationToken cancellationToken)
             {
+
                 var activity = mapper.Map<Activity>(request.ActivityDto);
-
-
 
                 context.Activities.Add(activity);
                 await context.SaveChangesAsync(cancellationToken);
