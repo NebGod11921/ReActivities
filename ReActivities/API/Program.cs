@@ -1,9 +1,13 @@
 using API.Middleware;
+using Application.Activities.Commands;
 using Application.Activities.Queries;
+using Application.Activities.Validators;
 using Application.Core;
 using FluentValidation;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,7 +44,8 @@ builder.Services.AddAutoMapper(
 //Validations
 builder.Services.AddValidatorsFromAssemblyContaining<GetActivityList>();
 builder.Services.AddTransient<ExceptionMiddleware>(); // khoi tao khi can thiet
-
+builder.Services.AddValidatorsFromAssemblyContaining<EditActivityValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateActivityValidator>();
 
 
 var app = builder.Build();
@@ -50,11 +55,14 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
+app.UseRouting();
+
+app.UseMiddleware<ExceptionMiddleware>();
+
+
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseCors("AllowReactApp");
 

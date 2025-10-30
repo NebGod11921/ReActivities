@@ -10,7 +10,7 @@ using Persistence;
 namespace API.Controllers;
 
     //(AppDbContext context)
-    public class ActivitiesController : BasicApiController
+    public class ActivitiesController : BaseApiController
     {
 
     //No need to inject Mediator cuuz it's already setup in BassicAPIController
@@ -30,20 +30,20 @@ namespace API.Controllers;
     [HttpPost]
         public async Task<ActionResult<string>> CreateActivity(CreateActivityDto activity)
         {
-            return await Mediator.Send(new CreateActivity.Command { ActivityDto = activity});
+            return HandleResult(await Mediator.Send(new CreateActivity.Command { ActivityDto = activity }));
           
         }
     [HttpPut]
-    public async Task<ActionResult> EditActivity(Activity activity)
+    public async Task<ActionResult> EditActivity(EditActivityDto activity)
     {
-        await Mediator.Send(new EditActivity.Command { Activity = activity });
-        return NoContent();
+        return HandleResult(await Mediator.Send(new EditActivity.Command { EditActivityDto = activity }));
+       
     }
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteActivity(string id)
     {
-        await Mediator.Send(new DeleteActivity.Command { Id = id });
-        return Ok();
+        return HandleResult(await Mediator.Send(new DeleteActivity.Command { Id = id }));
+       
     }
 
 }

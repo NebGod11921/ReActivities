@@ -15,6 +15,10 @@ namespace Application.Core
         {
             CreateMap<Activity, Activity>();
             CreateMap<Activity, CreateActivityDto>().ReverseMap();
+            CreateMap<Activity, EditActivityDto>().ReverseMap();
+            //CreateMap<BaseActivityDto, EditActivityDto>().ReverseMap();
+            //CreateMap<BaseActivityDto, CreateActivityDto>().ReverseMap();
+        
         }
     }
 }
