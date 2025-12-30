@@ -427,3 +427,5 @@ FodyWeavers.xsd
 *.msm
 *.msp
 ReActivities_Client/Client/.env.development
+ReActivities/API/reactivities.db-wal
+ReActivities/API/reactivities.db-shm
