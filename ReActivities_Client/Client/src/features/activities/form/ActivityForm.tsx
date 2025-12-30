@@ -6,13 +6,20 @@ import {useEffect} from "react";
 import {activitySchema, type ActivitySchema} from "../../../lib/schemas/activitySchema.ts";
 import {zodResolver} from "@hookform/resolvers/zod";
 import TextInput from "../../../app/shared/components/TextInput.tsx";
+import SelectInput from "../../../app/shared/components/SelectInput.tsx";
+import {categoryOptions} from "./CategoryOptions.tsx";
+import DateTimeInput from "../../../app/shared/components/DateTimeInput.tsx";
+import LocationInput from "../../../app/shared/components/LocationInput.tsx";
+
 
 
 
 export default function ActivityForm() {
     const { reset, handleSubmit, control} = useForm<ActivitySchema>({
         mode: 'onTouched',
-        resolver: zodResolver(activitySchema)
+        resolver: zodResolver(activitySchema),
+
+
     });
     const {id} = useParams();
     const {updateActivity, createActivity, activity, isLoadingActivity} = useActivities(id);
@@ -65,10 +72,16 @@ export default function ActivityForm() {
 
                 <TextInput label="Title" control={control} name='title'></TextInput>
                 <TextInput label="Description" control={control} name='description' multiline rows={3}></TextInput>
-                <TextInput label="Category" control={control} name='category'></TextInput>
-                <TextInput label="Date" control={control} name='date'></TextInput>
-                <TextInput label="City" control={control} name='city'></TextInput>
-                <TextInput label="Venue" control={control} name='venue'></TextInput>
+                <SelectInput items={categoryOptions}
+                             label="Category" control={control} name='category'></SelectInput>
+                <DateTimeInput label="Date" control={control} name='date'></DateTimeInput>
+                {/*<TextInput label="City" control={control} name='city'></TextInput>*/}
+                {/*<TextInput label="Venue" control={control} name='venue'></TextInput>*/}
+                <LocationInput control={control} label="Enter the location" name='location'></LocationInput>
+
+
+
+
                 {/*<TextField {...register('description')}  label='Description' defaultValue={activity?.description} multiline rows={3}> </TextField>*/}
                 {/*<TextField {...register('category')} label='Category' defaultValue={activity?.category}></TextField>*/}
                 {/*<TextField {...register('date')} label='Date' type='date'*/}

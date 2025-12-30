@@ -1,3 +1,4 @@
+
 import {z} from 'zod';
 
 const requiredString = (fieldName: string) =>
@@ -9,10 +10,17 @@ export const activitySchema = z.object({
     title: requiredString('Title'),
     description: requiredString('Description'),
     category: requiredString('Category'),
-    date: requiredString('Date'),
-    city: requiredString('City'),
-    venue: requiredString('Venue'),
-
+    date: z.date({
+        error: "Date is required",
+    }).nullable(),
+    // city: requiredString('City'),
+    // venue: requiredString('Venue'),
+    location: z.object({
+        venue: requiredString("Venue"),
+        city: z.string().optional(),
+        latitude: z.number(),
+        longitude: z.number(),
+    }),
 
 })
 

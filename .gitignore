@@ -426,3 +426,4 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+ReActivities_Client/Client/.env.development
