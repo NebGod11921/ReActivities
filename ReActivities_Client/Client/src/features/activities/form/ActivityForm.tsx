@@ -1,6 +1,6 @@
 import {Box, Button, Paper, Typography} from "@mui/material";
 import {useActivities} from "../../../lib/hooks/useActivities.ts";
-import { useParams} from "react-router";
+import {useNavigate, useParams} from "react-router";
 import { useForm} from "react-hook-form";
 import {useEffect} from "react";
 import {activitySchema, type ActivitySchema} from "../../../lib/schemas/activitySchema.ts";
@@ -14,6 +14,7 @@ import LocationInput from "../../../app/shared/components/LocationInput.tsx";
 
 
 
+
 export default function ActivityForm() {
     const { reset, handleSubmit, control} = useForm<ActivitySchema>({
         mode: 'onTouched',
@@ -21,39 +22,45 @@ export default function ActivityForm() {
 
 
     });
+    const navigate = useNavigate();
     const {id} = useParams();
     const {updateActivity, createActivity, activity, isLoadingActivity} = useActivities(id);
     // const navigate = useNavigate();
     useEffect(() => {
-        if(activity) reset(activity) ;
+        if(activity) reset({
+            ...activity,
+            location: {
+                city: activity.city,
+                venue: activity.venue,
+                latitude: activity.latitude,
+                longitude: activity.longitude
+            }
+        }) ;
     }, [activity, reset]);
 
 
-    const onSubmit=  (data: ActivitySchema) => {
-        // event.preventDefault();// prevent browser submission to cause page to reload and lose anything in data form
+    const onSubmit= async  (data: ActivitySchema) => {
+        const {location, ...rest} = data;
+        const flattenedData = {...rest, ...location, };
+        try {
+            if(activity) {
+                updateActivity.mutate(
+                    { ...activity, ...flattenedData },
+                    {
+                        onSuccess: () => navigate(`/Activities/${activity.id}`),
+                    }
+                );
+            } else {
+                createActivity.mutate(flattenedData, {
+                    onSuccess: (id) => navigate(`/Activities/${id}`),
+                    onError: (err) => console.error(err),
+                });
+            }
 
-        // const formData = new FormData(event.currentTarget);
-        //
-        // const data: {[key: string]: FormDataEntryValue} = {};
-        // formData.forEach((value, key) => {
-        //     data[key] = value;
-        // })
 
-        // if (activity) {
-        //     data.id = activity.id;
-        //     await updateActivity.mutateAsync(data as unknown as Activity);
-        //     navigate(`/activities/${activity.id}`);
-        //
-        // } else {
-        //      createActivity.mutate(data as unknown as Activity, {
-        //          onSuccess: (id) => {
-        //              navigate(`/activities/${id}`);
-        //          }
-        //      });
-        //
-        // }
-        console.log(data);
-
+        }catch (error) {
+            console.log(error);
+        }
 
 
     }
@@ -68,16 +75,29 @@ export default function ActivityForm() {
             <Typography variant="h5" gutterBottom color="primary">
                 {activity ? 'Edit activity' : 'Create activity'}
             </Typography>
-            <Box component='form' onSubmit={handleSubmit(onSubmit)} display='flex' flexDirection='column' gap={3}>
+            <Box component='form' onSubmit={handleSubmit(
+                (data) => {
+                    console.log("FORM SUBMITTED", data);
+                    onSubmit(data);
+                },
+                (errors) => {
+                    console.log(" FORM BLOCKED BY VALIDATION", errors);
+                }
+            )} display='flex' flexDirection='column' gap={3}>
 
                 <TextInput label="Title" control={control} name='title'></TextInput>
                 <TextInput label="Description" control={control} name='description' multiline rows={3}></TextInput>
-                <SelectInput items={categoryOptions}
-                             label="Category" control={control} name='category'></SelectInput>
-                <DateTimeInput label="Date" control={control} name='date'></DateTimeInput>
-                {/*<TextInput label="City" control={control} name='city'></TextInput>*/}
-                {/*<TextInput label="Venue" control={control} name='venue'></TextInput>*/}
+                <Box display='flex' gap={3}>
+                    <SelectInput items={categoryOptions}
+                                 label="Category" control={control} name='category'></SelectInput>
+                    <DateTimeInput label="Date" control={control} name='date'></DateTimeInput>
+
+                </Box>
                 <LocationInput control={control} label="Enter the location" name='location'></LocationInput>
+
+
+
+
 
 
 

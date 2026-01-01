@@ -1,6 +1,6 @@
-import {type FieldValues, useController, type UseControllerProps} from "react-hook-form";
-import type {TextFieldProps} from "@mui/material";
-import {DateTimePicker, type DateTimePickerProps} from "@mui/x-date-pickers";
+import { type FieldValues, useController, type UseControllerProps } from "react-hook-form";
+import type { TextFieldProps } from "@mui/material";
+import { DateTimePicker, type DateTimePickerProps } from "@mui/x-date-pickers";
 
 type Props<T extends FieldValues> =
     UseControllerProps<T> &
@@ -9,15 +9,18 @@ type Props<T extends FieldValues> =
 };
 
 export default function DateTimeInput<T extends FieldValues>({
-                                                         textFieldProps,
-                                                         ...controllerProps
-                                                     }: Props<T>) {
+                                                                 textFieldProps,
+                                                                 ...controllerProps
+                                                             }: Props<T>) {
     const { field, fieldState } = useController(controllerProps);
 
     return (
         <DateTimePicker
             value={field.value ? new Date(field.value) : null}
-            onChange={(value) => field.onChange(value)}
+            onChange={(value) => {
+                // 🔥 THE FIX
+                field.onChange(value ? new Date(value) : null);
+            }}
             sx={{ width: "100%" }}
             slotProps={{
                 textField: {
@@ -30,4 +33,3 @@ export default function DateTimeInput<T extends FieldValues>({
         />
     );
 }
-

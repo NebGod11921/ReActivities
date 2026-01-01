@@ -19,7 +19,7 @@ namespace Application.Activities.Validators
             RuleFor(x => selector(x).Description)
                 .NotEmpty().WithMessage("Description is required");
             RuleFor(x => selector(x).Date)
-                .GreaterThan(DateTime.UtcNow).WithMessage("Date is required");
+                .Must(date => date > DateTime.UtcNow).WithMessage("Date is required");
             RuleFor(x => selector(x).Category)
                 .NotEmpty().WithMessage("Category is required");
             RuleFor(x => selector(x).City)

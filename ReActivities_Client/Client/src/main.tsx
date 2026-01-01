@@ -14,6 +14,9 @@ import {store, StoreContext} from "./lib/stores/store.ts";
 import {ToastContainer} from "react-toastify";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
+import 'leaflet/dist/leaflet.css';
+
+
 
 const queryClient = new QueryClient();
 

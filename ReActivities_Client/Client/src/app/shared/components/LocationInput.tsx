@@ -61,8 +61,8 @@ export default function LocationInput<T extends FieldValues>(props: Props<T>) {
     const handleSelect = (location: LocationIQSuggestion) => {
         const city = location.address.city || location.address.village || location.address.towns
         const venue = location.display_name
-        const latitude = location.lat
-        const longitude = location.lon
+        const latitude = Number(location.lat)
+        const longitude = Number(location.lon)
 
         setInputValue(venue);
         field.onChange({city, venue, latitude, longitude});
