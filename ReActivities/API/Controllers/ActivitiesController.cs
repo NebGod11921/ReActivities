@@ -3,6 +3,7 @@ using Application.Activities.DTOs;
 using Application.Activities.Queries;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -15,12 +16,14 @@ namespace API.Controllers;
 
     //No need to inject Mediator cuuz it's already setup in BassicAPIController
 
+    //[AllowAnonymous]
     [HttpGet]
         public async Task<ActionResult<List<Activity>>> GetActivities(CancellationToken ct)
         {
             return await Mediator.Send(new GetActivityList.Query(), ct);    
 
         }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<Activity>> GetActivityDetails(string id)
     {
