@@ -80,7 +80,16 @@ app.MapControllers();
 
 app.MapGroup("api").MapIdentityApi<User>(); //api//login
 
-app.UseCors("AllowReactApp");
+//app.UseCors("AllowReactApp");
+
+app.UseCors( opts => 
+{
+    opts.WithOrigins("http://localhost:3000", "https://localhost:3000")
+         .AllowAnyHeader()
+         .AllowAnyMethod()
+         .AllowCredentials();
+});
+
 
 
 if (app.Environment.IsDevelopment())
