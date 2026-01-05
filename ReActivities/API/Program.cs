@@ -34,8 +34,19 @@ builder.Services.AddCors(options =>
         {
             policy.WithOrigins("http://localhost:3000","https://localhost:3000")
                   .AllowAnyHeader()
-                  .AllowAnyMethod();
+                  .AllowAnyMethod()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+
+
         });
+});
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.Name = "ReActivities.Auth";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -70,25 +81,20 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
+app.UseCors("AllowReactApp");
+
+
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapGroup("api").MapIdentityApi<User>(); //api//login
+app.MapGroup("api").MapIdentityApi<User>().RequireCors("AllowReactApp"); //api//login
 
-//app.UseCors("AllowReactApp");
 
-app.UseCors( opts => 
-{
-    opts.WithOrigins("http://localhost:3000", "https://localhost:3000")
-         .AllowAnyHeader()
-         .AllowAnyMethod()
-         .AllowCredentials();
-});
+
 
 
 

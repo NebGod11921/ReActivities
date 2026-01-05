@@ -39,15 +39,13 @@ namespace API.Controllers
         [HttpGet("user-info")]
         public async Task<IActionResult> GetUserInfo()
         {
-            if (User.Identity?.IsAuthenticated == false)
-            {
+            if (!User.Identity?.IsAuthenticated ?? true)
                 return NoContent();
-            }
+
             var user = await signIn.UserManager.GetUserAsync(User);
-            if(user == null)
-            {
+            if (user == null)
                 return Unauthorized();
-            }
+
             return Ok(new
             {
                 user.DisplayName,
