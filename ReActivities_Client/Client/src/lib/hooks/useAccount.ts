@@ -2,11 +2,14 @@ import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {LoginSchema} from "../schemas/loginSchema.ts"
 import agent from "../api/agent.ts";
 import type {User} from "../types";
-import {useNavigate} from "react-router";
+import {useLocation, useNavigate} from "react-router";
+import type {RegisterSchema} from "../schemas/registerSchema.ts";
+import {toast} from "react-toastify";
 
 
 export const useAccount = () => {
     const queryClient = useQueryClient();
+    const location = useLocation();
     const navigate = useNavigate();
     const loginUser = useMutation({
         mutationFn: async (creds: LoginSchema) => {
@@ -16,9 +19,20 @@ export const useAccount = () => {
             await queryClient.invalidateQueries({
                 queryKey: ['user']
             });
-            await navigate('/Activities')
+
         }
     });
+
+    const registerUser = useMutation({
+        mutationFn: async (creds: RegisterSchema)=> {
+            await agent.post('Account/register',creds);
+        },
+        onSuccess: () => {
+            toast.success('Register successful - you can now login');
+            navigate('/login')
+        }
+    })
+
 
     const logoutUser = useMutation({
         mutationFn: async () => {
@@ -33,13 +47,14 @@ export const useAccount = () => {
     })
 
 
-    const {data: currentUser} = useQuery({
+    const {data: currentUser, isLoading: loadingUserInfo} = useQuery({
         queryKey: ['user'],
         queryFn: async () => {
             const response = await agent.get<User>('/Account/user-info')
             return response.data;
         },
-        enabled: !queryClient.getQueryData(['user'])
+        enabled: !queryClient.getQueryData(['user']) && location.pathname !== 'login'
+        && location.pathname !== '/register'
     })
 
 
@@ -47,6 +62,8 @@ export const useAccount = () => {
     return {
         loginUser,
         currentUser,
-        logoutUser
+        logoutUser,
+        loadingUserInfo,
+        registerUser
     }
 }
