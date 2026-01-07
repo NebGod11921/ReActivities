@@ -18,14 +18,14 @@ namespace API.Controllers;
 
     //[AllowAnonymous]
     [HttpGet]
-        public async Task<ActionResult<List<Activity>>> GetActivities(CancellationToken ct)
+        public async Task<ActionResult<List<ActivityDTOs>>> GetActivities(CancellationToken ct)
         {
             return await Mediator.Send(new GetActivityList.Query(), ct);    
 
         }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Activity>> GetActivityDetails(string id)
+    public async Task<ActionResult<ActivityDTOs>> GetActivityDetails(string id)
     {
        return HandleResult( await Mediator.Send(new GetActivitiesDetails.Query { Id = id }));
         
@@ -47,6 +47,13 @@ namespace API.Controllers;
     {
         return HandleResult(await Mediator.Send(new DeleteActivity.Command { Id = id }));
        
+    }
+
+    [HttpPost("{id}/attend")]
+    public async Task<ActionResult> AttendActivity(string id)
+    {
+        return HandleResult(await Mediator.Send(new UpdateAttendance.Command { Id = id }));
+
     }
 
 }

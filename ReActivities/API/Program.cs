@@ -5,6 +5,8 @@ using Application.Activities.Validators;
 using Application.Core;
 using Domain;
 using FluentValidation;
+using Infrastructure;
+using Infrastructure.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -22,6 +24,10 @@ builder.Services.AddControllers(opt =>
     var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
     opt.Filters.Add(new AuthorizeFilter(policy));
 });
+
+builder.Services.AddScoped<IUserAccessor, UserAccessor>();
+
+
 
 builder.Services.AddDbContext<AppDbContext>(opt => 
 {
