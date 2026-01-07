@@ -3,8 +3,14 @@ using Application.Activities.Commands;
 using Application.Activities.Queries;
 using Application.Activities.Validators;
 using Application.Core;
+using Domain;
 using FluentValidation;
+using Infrastructure;
+using Infrastructure.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using System.Reflection;
@@ -13,7 +19,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(opt =>
+{
+    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    opt.Filters.Add(new AuthorizeFilter(policy));
+});
+
+builder.Services.AddScoped<IUserAccessor, UserAccessor>();
+
+
+
 builder.Services.AddDbContext<AppDbContext>(opt => 
 {
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -25,8 +40,19 @@ builder.Services.AddCors(options =>
         {
             policy.WithOrigins("http://localhost:3000","https://localhost:3000")
                   .AllowAnyHeader()
-                  .AllowAnyMethod();
+                  .AllowAnyMethod()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+
+
         });
+});
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.Name = "ReActivities.Auth";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -46,7 +72,11 @@ builder.Services.AddValidatorsFromAssemblyContaining<GetActivityList>();
 builder.Services.AddTransient<ExceptionMiddleware>(); // khoi tao khi can thiet
 builder.Services.AddValidatorsFromAssemblyContaining<EditActivityValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateActivityValidator>();
+builder.Services.AddIdentityApiEndpoints<User>(opt =>
+{
+    opt.User.RequireUniqueEmail = true;
 
+}).AddRoles<IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 
 var app = builder.Build();
 
@@ -57,14 +87,21 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
+app.UseCors("AllowReactApp");
+
+
 app.UseMiddleware<ExceptionMiddleware>();
 
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseCors("AllowReactApp");
+app.MapGroup("api").MapIdentityApi<User>().RequireCors("AllowReactApp"); //api//login
+
+
+
+
 
 
 if (app.Environment.IsDevelopment())
@@ -81,8 +118,9 @@ var services = scope.ServiceProvider;
 try
 {
     var context = services.GetRequiredService<AppDbContext>();
+    var userManager = services.GetRequiredService<UserManager<User>>();
     await context.Database.MigrateAsync();
-    await DbInitializer.SeedData(context);
+    await DbInitializer.SeedData(context, userManager);
 }
 catch (Exception ex)
 {
@@ -90,8 +128,5 @@ catch (Exception ex)
     logger.LogError(ex, "An error occurred during migration");
     throw;
 }
-
-
-
 
 app.Run();

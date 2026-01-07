@@ -10,6 +10,7 @@ const sleep = (delay: number) => {
 //env
 const agent = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
+    withCredentials: true
 });
 //Interceptors allow you to run code before a request is sent or after a response is received.
 

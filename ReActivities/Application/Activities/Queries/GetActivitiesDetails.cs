@@ -1,6 +1,10 @@
-﻿using Application.Core;
+﻿using Application.Activities.DTOs;
+using Application.Core;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Domain;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 using System;
 using System.Collections.Generic;
@@ -12,23 +16,39 @@ namespace Application.Activities.Queries
 {
     public class GetActivitiesDetails
     {
-        public class Query : IRequest<Result<Activity>>
+        public class Query : IRequest<Result<ActivityDTOs>>
         {
             public required string Id { get; set; }
         }
 
-        public class Handler(AppDbContext context) : IRequestHandler<Query, Result<Activity>>
+        public class Handler(AppDbContext context, IMapper mapper) : IRequestHandler<Query, Result<ActivityDTOs>>
         {
-            public async Task<Result<Activity>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<ActivityDTOs>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var activity = await context.Activities.FindAsync([request.Id], cancellationToken);
+                //step 1
+                //var activity = await context.Activities
+                //    .Include(x => x.ActivityAttendees)
+                //    .ThenInclude(u => u.User)
+                //    .FirstOrDefaultAsync(x => request.Id == x.Id, cancellationToken);
 
-                if(activity == null)
+
+                //step 2
+                var activity = await context.Activities
+                   .ProjectTo<ActivityDTOs>(mapper.ConfigurationProvider)
+                   .FirstOrDefaultAsync(x => request.Id == x.Id, cancellationToken);
+
+
+
+                if (activity == null)
                 {
-                    return Result<Activity>.Failure("Activity not found", 404);
+                    return Result<ActivityDTOs>.Failure("Activity not found", 404);
                 }
 
-                return Result<Activity>.Success(activity);
+                //step 1
+                //return Result<ActivityDTOs>.Success(mapper.Map<ActivityDTOs>(activity));
+
+                //step 2
+                return Result<ActivityDTOs>.Success(activity);
             }
         }
     }

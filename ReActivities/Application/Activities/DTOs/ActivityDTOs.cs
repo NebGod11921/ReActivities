@@ -1,16 +1,16 @@
-﻿using System;
+﻿using Application.Profiles.DTOs;
+using Domain;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain
+namespace Application.Activities.DTOs
 {
-    public class Activity
+    public class ActivityDTOs
     {
-        
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public required string Id { get; set; } 
         public required string Title { get; set; }
         public DateTime Date { get; set; }
         public required string Description { get; set; }
@@ -23,8 +23,12 @@ namespace Domain
         public double Latitude { get; set; }
         public double Longitude { get; set; }
 
+        public required string HostDisplayName { get; set; }
+        public required string HostId { get; set; }
+
+
 
         //navigation property
-        public ICollection<ActivityAttendee> ActivityAttendees { get; set; } = [];
+        public ICollection<UserProfile> ActivityAttendees { get; set; } = [];
     }
 }
