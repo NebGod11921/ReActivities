@@ -9,13 +9,10 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure
+namespace Infrastructure.Security
 {
     public class UserAccessor(IHttpContextAccessor httpContextAccessor, AppDbContext dbContext) : IUserAccessor
     {
-
-
-
 
         public async Task<User> GetUserAsync()
         {
