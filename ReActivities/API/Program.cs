@@ -78,6 +78,16 @@ builder.Services.AddIdentityApiEndpoints<User>(opt =>
 
 }).AddRoles<IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 
+builder.Services.AddAuthorization(opt =>
+{
+    opt.AddPolicy("IsActivityHost", policy =>
+    {
+        policy.Requirements.Add(new IsHostRequirement());
+    });
+});
+
+builder.Services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

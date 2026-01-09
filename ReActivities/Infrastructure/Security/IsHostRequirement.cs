@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 using System;
 using System.Collections.Generic;
@@ -26,7 +28,19 @@ namespace Infrastructure.Security
             }
             var httpContext = httpContextAccessor.HttpContext;
 
+            if (httpContext?.GetRouteValue("id") is not string activityId) return;
 
-        }
+            var attendee = await dbContext.ActivityAttendees
+                .AsNoTracking() //error from tracking issue attendee from DTos
+                .SingleOrDefaultAsync(x => x.UserId == userId && x.ActivityId == activityId);
+
+            if (attendee == null) return;
+
+            if (attendee.IsHost)
+            {
+                context.Succeed(requirement);
+
+            }
+        } 
     }
 }
