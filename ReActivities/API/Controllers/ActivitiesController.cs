@@ -18,6 +18,7 @@ public class ActivitiesController : BaseApiController
 
     //[AllowAnonymous]
     [HttpGet]
+    
     public async Task<ActionResult<List<ActivityDTOs>>> GetActivities(CancellationToken ct)
     {
         return await Mediator.Send(new GetActivityList.Query(), ct);
@@ -25,12 +26,14 @@ public class ActivitiesController : BaseApiController
     }
 
     [HttpGet("{id}")]
+
     public async Task<ActionResult<ActivityDTOs>> GetActivityDetails(string id)
     {
         return HandleResult(await Mediator.Send(new GetActivitiesDetails.Query { Id = id }));
 
     }
     [HttpPost]
+
     public async Task<ActionResult<string>> CreateActivity(CreateActivityDto activity)
     {
         return HandleResult(await Mediator.Send(new CreateActivity.Command { ActivityDto = activity }));

@@ -1,7 +1,7 @@
 import {Box, Typography} from "@mui/material";
 import ActivityCard from "./ActivityCard";
 import {useActivities} from "../../../lib/hooks/useActivities.ts";
-import type {Activity} from "../../../lib/types";
+
 
 
 export default function ActivityList() {

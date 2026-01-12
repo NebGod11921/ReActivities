@@ -2,18 +2,15 @@ import { AccessTime, Place } from "@mui/icons-material";
 import {Avatar, Box, Button, Card,  CardContent, CardHeader, Chip, Divider, Typography} from "@mui/material"
 import { Link } from "react-router";
 import {formatDate} from "../../../lib/utils/utils.tsx";
-import type {Activity} from "../../../lib/types";
+
 
 type Props = {
     activity: Activity;
 }
 
 export default function ActivityCard({activity} : Props) {
-    const isHost = false;
-    const isGoing = false;
-    const label  = isHost ? 'You are hosting' : 'You are going';
-    const isCancelled = false;
-    const color = isHost? 'secondary' : isGoing? 'primary' : 'default';
+    const label  = activity.isHost ? 'You are hosting' : 'You are going';
+    const color = activity.isHost? 'secondary' : activity.isGoing? 'primary' : 'default';
 
 
     return (
@@ -28,15 +25,15 @@ export default function ActivityCard({activity} : Props) {
                     }}
                     subheader={
                         <>
-                            Hosted by{' '} <Link to={'/profiles/bob'}></Link>
+                            Hosted by{' '} <Link to={`/profiles/${activity.hostId}`}></Link>
                         </>
                     }
                 >
 
                 </CardHeader>
                 <Box display='flex' flexDirection="column" gap={2} mr={2}>
-                    {(isHost || isGoing) && <Chip label={label} color={color} sx={{borderRadius:2}}></Chip>}
-                    {isCancelled && <Chip label='Cancelled' color='error' sx={{borderRadius: 2}}></Chip>}
+                    {(activity.isHost || activity.isGoing) && <Chip label={label} color={color} sx={{borderRadius:2}}></Chip>}
+                    {activity.isCancelled && <Chip label='Cancelled' color='error' sx={{borderRadius: 2}}></Chip>}
                 </Box>
             </Box>
 
@@ -57,7 +54,15 @@ export default function ActivityCard({activity} : Props) {
                 </Box>
                 <Divider></Divider>
                 <Box display='flex' gap={2} sx={{backgroundColor: ' grey.200', py: 3, pl: 3}}>
-                    Attendees go here
+                    {activity.activityAttendees.map(att => (
+                        <Avatar key={att.id}
+                                alt={att.displayName + ' image'}
+                                src={att.imageUrl}
+                                component={Link}
+                        to={`/profiles/${att.id}`}>
+
+                        </Avatar>
+                    ))}
                 </Box>
             </CardContent>
 

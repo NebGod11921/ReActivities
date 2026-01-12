@@ -41,7 +41,6 @@ builder.Services.AddCors(options =>
             policy.WithOrigins("http://localhost:3000","https://localhost:3000")
                   .AllowAnyHeader()
                   .AllowAnyMethod()
-                  .AllowAnyMethod()
                   .AllowCredentials();
 
 
@@ -97,11 +96,10 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
-app.UseCors("AllowReactApp");
-
 
 app.UseMiddleware<ExceptionMiddleware>();
 
+app.UseCors("AllowReactApp");
 app.UseAuthentication();
 app.UseAuthorization();
 
