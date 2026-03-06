@@ -48,6 +48,7 @@ namespace API.Controllers
 
             return Ok(new
             {
+                user.Id,
                 user.DisplayName,
                 user.UserName,
                 user.Email,

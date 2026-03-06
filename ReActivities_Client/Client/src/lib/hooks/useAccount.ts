@@ -10,6 +10,9 @@ export const useAccount = () => {
     const queryClient = useQueryClient();
     const location = useLocation();
     const navigate = useNavigate();
+
+
+
     const loginUser = useMutation({
         mutationFn: async (creds: LoginSchema) => {
             await agent.post('/login?useCookies=true', creds);
@@ -24,7 +27,7 @@ export const useAccount = () => {
 
     const registerUser = useMutation({
         mutationFn: async (creds: RegisterSchema)=> {
-            await agent.post('Account/register',creds);
+            await agent.post('/Account/register',creds);
         },
         onSuccess: () => {
             toast.success('Register successful - you can now login');

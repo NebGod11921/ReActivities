@@ -11,5 +11,6 @@ namespace Infrastructure.Interfaces
     {
         string GetUserId();
         Task<User> GetUserAsync();
+        Task<User> GetUserWithPhotosAsync();
     }
 }

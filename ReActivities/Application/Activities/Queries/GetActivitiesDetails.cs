@@ -3,6 +3,7 @@ using Application.Core;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain;
+using Infrastructure.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -21,7 +22,7 @@ namespace Application.Activities.Queries
             public required string Id { get; set; }
         }
 
-        public class Handler(AppDbContext context, IMapper mapper) : IRequestHandler<Query, Result<ActivityDTOs>>
+        public class Handler(AppDbContext context, IMapper mapper, IUserAccessor userAccessor) : IRequestHandler<Query, Result<ActivityDTOs>>
         {
             public async Task<Result<ActivityDTOs>> Handle(Query request, CancellationToken cancellationToken)
             {
@@ -34,7 +35,7 @@ namespace Application.Activities.Queries
 
                 //step 2
                 var activity = await context.Activities
-                   .ProjectTo<ActivityDTOs>(mapper.ConfigurationProvider)
+                   .ProjectTo<ActivityDTOs>(mapper.ConfigurationProvider, new { currentUserId = userAccessor.GetUserId() })
                    .FirstOrDefaultAsync(x => request.Id == x.Id, cancellationToken);
 
 

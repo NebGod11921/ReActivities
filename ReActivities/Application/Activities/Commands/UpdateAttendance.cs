@@ -24,22 +24,24 @@ namespace Application.Activities.Commands
         {
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
-               var activity = await context.Activities
-                    .Include(x => x.ActivityAttendees)
-                    .ThenInclude(x => x.User)
-                    .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
-                if (activity == null) 
-                    return Result<Unit>.Failure("Activity not found", 404);
+                var activity = await context.Activities
+                .Include(a => a.ActivityAttendees)
+                .ThenInclude(u => u.User)
+                .SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+
+                if (activity == null) return Result<Unit>.Failure("Activity not found", 404);
+
                 var user = await userAccessor.GetUserAsync();
-                
-                var attendee = activity.ActivityAttendees
-                    .FirstOrDefault(x => x.UserId == user.Id);
+
+                var attendance = activity.ActivityAttendees.FirstOrDefault(x => x.UserId == user.Id);
                 var isHost = activity.ActivityAttendees.Any(x => x.IsHost && x.UserId == user.Id);
-                if (attendee != null )
+
+                if (attendance != null)
                 {
-                    if(isHost) activity.IsCancelled = !activity.IsCancelled;
-                    else activity.ActivityAttendees.Remove(attendee);
-                } else
+                    if (isHost) activity.IsCancelled = !activity.IsCancelled;
+                    else activity.ActivityAttendees.Remove(attendance);
+                }
+                else
                 {
                     activity.ActivityAttendees.Add(new ActivityAttendee
                     {
@@ -47,12 +49,13 @@ namespace Application.Activities.Commands
                         ActivityId = activity.Id,
                         IsHost = false
                     });
-                    
                 }
+
                 var result = await context.SaveChangesAsync(cancellationToken) > 0;
 
-                return result ? Result<Unit>.Success(Unit.Value) :
-                    Result<Unit>.Failure("Failed to update attendance", 500);
+                return result
+                    ? Result<Unit>.Success(Unit.Value)
+                    : Result<Unit>.Failure("Problem updating attendance", 400);
             }
         }
     }

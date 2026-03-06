@@ -2,6 +2,7 @@ import { AccessTime, Place } from "@mui/icons-material";
 import {Avatar, Box, Button, Card,  CardContent, CardHeader, Chip, Divider, Typography} from "@mui/material"
 import { Link } from "react-router";
 import {formatDate} from "../../../lib/utils/utils.tsx";
+import AvatarPopover from "../../../app/shared/components/AvatarPopover.tsx";
 
 
 type Props = {
@@ -25,16 +26,17 @@ export default function ActivityCard({activity} : Props) {
                     }}
                     subheader={
                         <>
-                            Hosted by{' '} <Link to={`/profiles/${activity.hostId}`}></Link>
+                            Hosted by {activity.hostDisplayName} <Link to={`/profiles/${activity.hostId}`}></Link>
                         </>
                     }
                 >
 
                 </CardHeader>
                 <Box display='flex' flexDirection="column" gap={2} mr={2}>
-                    {(activity.isHost || activity.isGoing) && <Chip label={label} color={color} sx={{borderRadius:2}}></Chip>}
+                    {(activity.isHost || activity.isGoing) && <Chip variant="outlined" label={label} color={color} sx={{borderRadius:2}}></Chip>}
                     {activity.isCancelled && <Chip label='Cancelled' color='error' sx={{borderRadius: 2}}></Chip>}
                 </Box>
+
             </Box>
 
             <Divider sx={{mb:3}}></Divider>
@@ -55,13 +57,7 @@ export default function ActivityCard({activity} : Props) {
                 <Divider></Divider>
                 <Box display='flex' gap={2} sx={{backgroundColor: ' grey.200', py: 3, pl: 3}}>
                     {activity.activityAttendees.map(att => (
-                        <Avatar key={att.id}
-                                alt={att.displayName + ' image'}
-                                src={att.imageUrl}
-                                component={Link}
-                        to={`/profiles/${att.id}`}>
-
-                        </Avatar>
+                        <AvatarPopover profile={att} key={att.id}></AvatarPopover>
                     ))}
                 </Box>
             </CardContent>

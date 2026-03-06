@@ -10,6 +10,8 @@ export const useActivities = (id?: string) => {
     const {currentUser} = useAccount();
 
 
+
+
     const {data: activities, isLoading} = useQuery({
         queryKey: ['activities'],
         queryFn: async () =>
@@ -30,22 +32,48 @@ export const useActivities = (id?: string) => {
         }
     });
 
-    const {data: activity, isLoading: isLoadingActivity} = useQuery({
-        queryKey: ['activity', id],
-        queryFn: async () =>{
+    // const {data: activity, isLoading: isLoadingActivity} = useQuery({
+    //     queryKey: ['activity', id],
+    //     queryFn: async () =>{
+    //         const response = await agent.get<Activity>(`/Activities/${id}`);
+    //         return response.data;
+    //     },
+    //     enabled: !!id && !!currentUser,
+    //     select: data => {
+    //         const host = data.activityAttendees.find(x => x.id === data.hostId);
+    //         return {
+    //             ...data,
+    //             isHost: currentUser?.id === data.hostId,
+    //             isGoing: data.activityAttendees.some(x => x.id === currentUser?.id),
+    //             hostImageUrl: host?.imageUrl
+    //         }
+    //     }
+    //
+    // })
+    const { isLoading: isLoadingActivity, data: activity } = useQuery<Activity>({
+
+
+
+        queryKey: ['activities', id, currentUser?.id],
+        queryFn: async () => {
             const response = await agent.get<Activity>(`/Activities/${id}`);
             return response.data;
         },
-        enabled: !!id && !!currentUser,//conditional to check id
+        enabled: !!id && !!currentUser,
         select: data => {
+            const host = data.activityAttendees.find(x => x.id === data.hostId);
+            console.log('attendees:', data.activityAttendees.map(x => x.id));
+            console.log('currentUser.id:', currentUser?.id);
+
             return {
                 ...data,
                 isHost: currentUser?.id === data.hostId,
-                isGoing: data.activityAttendees.some( x => x.id === currentUser?.id)
+                isGoing: data.activityAttendees.some(x => x.id === currentUser?.id),
+                hostImageUrl: host?.imageUrl
             }
         }
+    });
 
-    })
 
 
     const updateActivity = useMutation({
@@ -87,7 +115,50 @@ export const useActivities = (id?: string) => {
 
 
 
+    const updateAttendance = useMutation({
+        mutationFn: async (id: string) => {
 
-    return {activities, isLoading, updateActivity, createActivity,deleteActivity, isLoadingActivity, activity};
+            await agent.post(`/Activities/${id}/attend`);
+        },
+        onMutate: async (activityId: string) => {
+            await queryClient.cancelQueries({queryKey: ['activities', activityId]});
+            const preActivity = queryClient.getQueryData<Activity>(['activities', activityId]);
+            queryClient.setQueryData<Activity>(['activities', activityId], oldActivity => {
+                if(!oldActivity || !currentUser) {
+                    return oldActivity;
+                }
+
+                const isHost = oldActivity.hostId === currentUser.id;
+                const isAttending = oldActivity.activityAttendees.some(x => x.id === currentUser.id);
+
+                return {
+                    ...oldActivity,
+                    isCancelled: isHost ? !oldActivity.isCancelled : oldActivity.isCancelled,
+                    activityAttendees: isAttending
+                        ? isHost
+                                ? oldActivity.activityAttendees
+                                : oldActivity.activityAttendees.filter(x => x.id !== currentUser.id)
+                        : [...oldActivity.activityAttendees, {
+                                id: currentUser.id,
+                                displayName: currentUser.displayName,
+                                imageUrl: currentUser.imageUrl
+                            }]
+                }
+
+            })
+            return {preActivity};
+        },
+        onError: (error, activityId, context) => {
+
+            console.log(error);
+            if(context?.preActivity) {
+                    queryClient.setQueryData(['activities', activityId],context.preActivity)
+                }
+        }
+
+    })
+
+
+    return {activities, isLoading, updateActivity, createActivity,deleteActivity, isLoadingActivity, activity, updateAttendance};
 
 }
