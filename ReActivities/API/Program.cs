@@ -1,4 +1,5 @@
 using API.Middleware;
+using API.SignalR;
 using Application.Activities.Commands;
 using Application.Activities.Queries;
 using Application.Activities.Validators;
@@ -90,7 +91,7 @@ builder.Services.AddAuthorization(opt =>
 builder.Services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.AddScoped<IPhotoService, PhotoService>();
-
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -111,7 +112,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapGroup("api").MapIdentityApi<User>().RequireCors("AllowReactApp"); //api//login
-
+app.MapHub<CommentHub>("/comments");
 
 
 

@@ -22,11 +22,14 @@ export const useActivities = (id?: string) => {
         },
         enabled: !id && location.pathname === '/activities' && !!currentUser,
         select: data => {
-            return data.map(activities => {
+
+            return data.map(activity => {
+                const host = activity.activityAttendees.find(x => x.id === activity.hostId);
                 return {
-                    ...activities,
-                    isHost: currentUser?.id === activities.hostId,
-                    isGoing: activities.activityAttendees.some( x => x.id === currentUser?.id)
+                    ...activity,
+                    isHost: currentUser?.id === activity.hostId,
+                    isGoing: activity.activityAttendees.some( x => x.id === currentUser?.id),
+                    hostImageUrl: host?.imageUrl,
                 }
             })
         }
@@ -62,8 +65,7 @@ export const useActivities = (id?: string) => {
         enabled: !!id && !!currentUser,
         select: data => {
             const host = data.activityAttendees.find(x => x.id === data.hostId);
-            console.log('attendees:', data.activityAttendees.map(x => x.id));
-            console.log('currentUser.id:', currentUser?.id);
+
 
             return {
                 ...data,

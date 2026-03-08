@@ -1,9 +1,14 @@
-import {format, type DateArg} from "date-fns";
+import {format, type DateArg, formatDistanceToNow} from "date-fns";
 import {z} from "zod";
 
 export function formatDate(date: DateArg<Date>) {
     return format(date, 'dd MMM yyyy hh:mm a');
 }
+
+export const timeAgo = (date: Date) => {
+    return formatDistanceToNow(date) + ' ago';
+}
+
 
 export const requiredString = (fieldName: string) =>
     z

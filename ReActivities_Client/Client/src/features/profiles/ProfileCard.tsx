@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import {Box, Card, CardContent, CardMedia, Chip, Divider, Typography} from "@mui/material";
+import {Box, Card, CardContent, CardMedia, Divider, Typography} from "@mui/material";
 import { Person } from "@mui/icons-material";
 
 type Props = {
@@ -9,26 +9,34 @@ type Props = {
 
 
 export default function ProfileCard({profile}: Props) {
-    const following = false;
+    // const following = false;
     return (
         <Link to={`/profiles/${profile.id}`} style={{textDecoration: 'none'}}>
-            <Card sx={{borderRadius: 3, p: 3, maxWidth: 300, textDecoration: 'none'}}
+            <Card sx={{borderRadius: 3, p: 3, maxWidth: 250, textDecoration: 'none'}}
                 elevation={4}
 
             >
                 <CardMedia component='img' src={profile?.imageUrl || '/images/user.png'}
-                    sx={{width: 200, zIndex: 50}}
+                    sx={{width: '100%', zIndex: 50}}
                            alt={profile.displayName + ' image'}
                 >
+
                 </CardMedia>
                 <CardContent>
-                    <Box display = 'flex' alignItems='center' gap={1}>
-                        <Typography variant='h5'>
-                            {following && <Chip size="small" label="Following" color='secondary' variant='outlined'>
+                    <Box display='flex' flexDirection='column' gap={1}>
+                        <Typography variant="h5">{profile.displayName}</Typography>
+                        {profile.bio &&
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    textOverflow: 'ellipsis',
+                                    overflow: 'hidden',
+                                    whiteSpace: 'nowrap'
+                                }}
+                            >
+                                {profile?.bio}
+                            </Typography>}
 
-                            </Chip>}
-
-                        </Typography>
                     </Box>
                 </CardContent>
                 <Divider sx={{mb: 2}}></Divider>

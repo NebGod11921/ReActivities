@@ -30,7 +30,8 @@ export default function UserMenu() {
                 onClick={handleClick}
             >
                 <Box display='flex' alignItems='center' gap={2}>
-                    <Avatar></Avatar>
+                    <Avatar src={currentUser?.imageUrl}
+                    alt='current image'></Avatar>
                     {currentUser?.displayName}
                 </Box>
             </Button>
@@ -55,7 +56,7 @@ export default function UserMenu() {
                     </ListItemIcon>
                     <ListItemIcon>Create Activity</ListItemIcon>
                 </MenuItem>
-                <MenuItem component={Link} to='/profile' onClick={handleClose}>
+                <MenuItem component={Link} to={`/profile/${currentUser?.id}`} onClick={handleClose}>
                     <ListItemIcon>
                         <Person></Person>
                     </ListItemIcon>
