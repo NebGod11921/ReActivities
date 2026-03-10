@@ -2,6 +2,7 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain;
+using Infrastructure.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -18,7 +19,7 @@ namespace Application.Activities.Queries
     {
         public class Query : IRequest<List<ActivityDTOs>> { }
 
-        public class Handler(AppDbContext context, ILogger<GetActivityList> logger, IMapper mapper) : IRequestHandler<Query, List<ActivityDTOs>>
+        public class Handler(AppDbContext context, ILogger<GetActivityList> logger, IMapper mapper, IUserAccessor userAccessor) : IRequestHandler<Query, List<ActivityDTOs>>
         {
 
             public async Task<List<ActivityDTOs>> Handle(Query request, CancellationToken cancellationToken)
@@ -45,7 +46,7 @@ namespace Application.Activities.Queries
 
                 //step 2
 
-                return await context.Activities.ProjectTo<ActivityDTOs>(mapper.ConfigurationProvider)
+                return await context.Activities.ProjectTo<ActivityDTOs>(mapper.ConfigurationProvider, new {currentUserId = userAccessor.GetUserId()})
                     .ToListAsync(cancellationToken); 
             }
         }

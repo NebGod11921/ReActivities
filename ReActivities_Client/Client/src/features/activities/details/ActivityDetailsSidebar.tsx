@@ -37,10 +37,12 @@ export default function ActivityDetailsSidebar({ activity }: Props) {
                                     </ListItemAvatar>
                                     <ListItemText>
                                         <Typography variant="h6">{a.displayName}</Typography>
-
+                                        {a.following && (
                                             <Typography variant="body2" color="orange">
                                                 Following
                                             </Typography>
+                                        )}
+
 
                                     </ListItemText>
                                 </ListItem>

@@ -16,18 +16,21 @@ namespace Persistence
             {
                 new()
                 {
+                   
                     DisplayName = "Bob",
                     UserName = "bob@test.com",
                     Email = "bob@test.com"
                 },
                 new()
                 {
+
                     DisplayName = "Tom",
                     UserName = "tom@test.com",
                     Email = "tom@test.com"
                 },
                 new()
                 {
+                   
                     DisplayName = "James",
                     UserName = "james@test.com",
                     Email = "james@test.com"

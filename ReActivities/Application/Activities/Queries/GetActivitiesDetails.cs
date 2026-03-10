@@ -35,7 +35,7 @@ namespace Application.Activities.Queries
 
                 //step 2
                 var activity = await context.Activities
-                   .ProjectTo<ActivityDTOs>(mapper.ConfigurationProvider, new { currentUserId = userAccessor.GetUserId() })
+                   .ProjectTo<ActivityDTOs>(mapper.ConfigurationProvider, new { currentUserId = userAccessor.GetUserId()})
                    .FirstOrDefaultAsync(x => request.Id == x.Id, cancellationToken);
 
 

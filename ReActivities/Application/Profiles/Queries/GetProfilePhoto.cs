@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Activities.Queries
+namespace Application.Profiles.Queries
 {
     public class GetProfilePhoto
     {

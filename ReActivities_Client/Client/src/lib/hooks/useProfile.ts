@@ -3,7 +3,7 @@ import agent from "../api/agent.ts";
 import {useMemo} from "react";
 import type { EditProfileSchema } from "../schemas/editProfileSchema.ts";
 
-export const useProfile = (id?: string) => {
+export const useProfile = (id?: string, predicate?: string) => {
     const queryClient = useQueryClient();
 
 
@@ -13,8 +13,19 @@ export const useProfile = (id?: string) => {
             const response = await agent.get<Profile>(`/Profiles/${id}`);
             return response.data;
         },
-        enabled: !!id
+        enabled: !!id && !predicate,
     });
+
+    const {data: followings, isLoading: loadingFollowings}= useQuery<Profile[]>({
+        queryKey: ['followings', id, predicate],
+        queryFn: async () => {
+            const response = await agent.get<Profile[]>(`/profiles/${id}/follow-list?predicate=${predicate}`)
+            return response.data;
+        },
+        enabled: !!id && !!predicate,
+    })
+
+
 
     const {data: photos, isLoading: loadingPhotos} = useQuery<Photo []>({
         queryKey: ['photos', id],
@@ -22,7 +33,7 @@ export const useProfile = (id?: string) => {
             const response = await agent.get<Photo []>(`/Profiles/${id}/photos`)
             return response.data;
         },
-        enabled: !!id
+        enabled: !!id && !predicate
     });
 
     const uploadPhoto = useMutation({
@@ -111,6 +122,24 @@ export const useProfile = (id?: string) => {
         }
     })
 
+    const updateFollowing = useMutation({
+        mutationFn: async () => {
+            await agent.post(`/profiles/${id}/follow`)
+        },
+        onSuccess: () => {
+            queryClient.setQueryData(['profile', id], (profile: Profile) => {
+                queryClient.invalidateQueries({queryKey: ['followings', id, 'followers']});
+                if (!profile || profile.followersCount === undefined) return profile;
+                return {
+                    ...profile,
+                    following: !profile.following,
+                    followersCount: profile.following
+                        ? profile.followersCount - 1
+                        : profile.followersCount + 1
+                }
+            })
+        }
+    })
 
 
 
@@ -125,7 +154,7 @@ export const useProfile = (id?: string) => {
 
     return {
         profile, LoadingProfile, photos, loadingPhotos, isCurrentUser, uploadPhoto, setMainPhoto, deletePhoto,
-        updateProfile
+        updateProfile, updateFollowing, loadingFollowings, followings
     }
 
 }
