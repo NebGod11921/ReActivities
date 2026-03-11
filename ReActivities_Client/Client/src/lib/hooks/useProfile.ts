@@ -1,22 +1,22 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import agent from "../api/agent.ts";
-import {useMemo} from "react";
-import type { EditProfileSchema } from "../schemas/editProfileSchema.ts";
+import {useMemo, useState} from "react";
+import type {EditProfileSchema} from "../schemas/editProfileSchema.ts";
 
 export const useProfile = (id?: string, predicate?: string) => {
     const queryClient = useQueryClient();
-
+    const [filter, setFilter] = useState<string | null>(null);
 
     const {data: profile, isLoading: LoadingProfile} = useQuery<Profile>({
         queryKey: ['profile', id],
-        queryFn: async() => {
+        queryFn: async () => {
             const response = await agent.get<Profile>(`/Profiles/${id}`);
             return response.data;
         },
         enabled: !!id && !predicate,
     });
 
-    const {data: followings, isLoading: loadingFollowings}= useQuery<Profile[]>({
+    const {data: followings, isLoading: loadingFollowings} = useQuery<Profile[]>({
         queryKey: ['followings', id, predicate],
         queryFn: async () => {
             const response = await agent.get<Profile[]>(`/profiles/${id}/follow-list?predicate=${predicate}`)
@@ -24,7 +24,6 @@ export const useProfile = (id?: string, predicate?: string) => {
         },
         enabled: !!id && !!predicate,
     })
-
 
 
     const {data: photos, isLoading: loadingPhotos} = useQuery<Photo []>({
@@ -50,14 +49,14 @@ export const useProfile = (id?: string, predicate?: string) => {
                 queryKey: ['photos', id],
             });
             queryClient.setQueryData(['user'], (data: User) => {
-                if(!data) return data;
+                if (!data) return data;
                 return {
                     ...data,
                     imageUrl: data.imageUrl ?? photo.url
                 }
             });
             queryClient.setQueryData(['profile'], (data: Profile) => {
-                if(!data) return data;
+                if (!data) return data;
                 return {
                     ...data,
                     imageUrl: data.imageUrl ?? photo.url
@@ -72,14 +71,14 @@ export const useProfile = (id?: string, predicate?: string) => {
         },
         onSuccess: (_, photo) => {
             queryClient.setQueryData(['user'], (userData: User) => {
-                if(!userData) return userData;
+                if (!userData) return userData;
                 return {
                     ...userData,
                     imageUrl: photo.url
                 }
             })
             queryClient.setQueryData(['profile', id], (profile: Profile) => {
-                if(!profile) return profile;
+                if (!profile) return profile;
                 return {
                     ...profile,
                     imageUrl: photo.url
@@ -141,10 +140,19 @@ export const useProfile = (id?: string, predicate?: string) => {
         }
     })
 
+    const {data: userActivities, isLoading: loadingUserActivities} = useQuery({
+        queryKey: ['activities', id],
+        queryFn: async () => {
+            const response = await agent.get<Activity[]>(`/profiles/${id}/activities`, {
+                params: {
+                    filter
 
-
-
-
+                }
+            });
+            return response.data
+        },
+        enabled: !!id && !!filter
+    });
 
 
     const isCurrentUser = useMemo(() => {
@@ -153,8 +161,22 @@ export const useProfile = (id?: string, predicate?: string) => {
 
 
     return {
-        profile, LoadingProfile, photos, loadingPhotos, isCurrentUser, uploadPhoto, setMainPhoto, deletePhoto,
-        updateProfile, updateFollowing, loadingFollowings, followings
+        profile,
+        LoadingProfile,
+        photos,
+        loadingPhotos,
+        isCurrentUser,
+        uploadPhoto,
+        setMainPhoto,
+        deletePhoto,
+        updateProfile,
+        updateFollowing,
+        loadingFollowings,
+        followings,
+        userActivities,
+        loadingUserActivities,
+        setFilter,
+        filter
     }
 
 }

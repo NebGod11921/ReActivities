@@ -3,33 +3,28 @@ import {useParams} from "react-router";
 import {useProfile} from "../../lib/hooks/useProfile.ts";
 
 
-
-
-
 export default function ProfileHeader() {
     const {id} = useParams();
     const {isCurrentUser, profile, updateFollowing} = useProfile(id);
 
-    if(!profile) return null;
-
-
-
+    if (!profile) return null;
 
 
     return (
-        <Paper elevation={3} sx={{p:4, borderRadius: 3}}>
+        <Paper elevation={3} sx={{p: 4, borderRadius: 3}}>
             <Grid container spacing={2}>
                 <Grid size={8}>
                     <Stack direction='row' spacing={3} alignItems='center'>
-                        <Avatar sx={{width: 150, height: 150}} src={profile.imageUrl} alt={profile.displayName + ' image'}>
+                        <Avatar sx={{width: 150, height: 150}} src={profile.imageUrl}
+                                alt={profile.displayName + ' image'}>
 
                         </Avatar>
                         <Box display='flex' flexDirection='column' gap={2}>
                             <Typography variant='h4'>{profile.displayName}</Typography>
                             {profile.following && <Chip variant="outlined"
-                                                  color="secondary"
-                                                  label='Following'
-                                                  sx={{borderRadius: 1}}
+                                                        color="secondary"
+                                                        label='Following'
+                                                        sx={{borderRadius: 1}}
                             ></Chip>}
                         </Box>
                     </Stack>
@@ -49,8 +44,8 @@ export default function ProfileHeader() {
                         {!isCurrentUser && (
                             <>
                                 <Divider sx={{width: '100%'}}></Divider>
-                                <Button fullWidth variant="outlined" color={profile.following ?'error' : 'success'}
-                                onClick={() => updateFollowing.mutate()} disabled={updateFollowing.isPending}>
+                                <Button fullWidth variant="outlined" color={profile.following ? 'error' : 'success'}
+                                        onClick={() => updateFollowing.mutate()} disabled={updateFollowing.isPending}>
                                     {profile.following ? 'Unfollow' : 'Follow'}
                                 </Button>
                             </>

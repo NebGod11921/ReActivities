@@ -1,7 +1,7 @@
 import {type FieldValues, useController, type UseControllerProps} from "react-hook-form";
 import {Box, debounce, List, ListItemButton, TextField, Typography} from "@mui/material";
 import {useEffect, useMemo, useState} from "react";
-import type {LocationIQSuggestion} from "../../../lib/types";
+import type {LocationIQSuggestion} from "../../../lib/types/index";
 import axios from "axios";
 
 type Props<T extends FieldValues> = {
@@ -10,21 +10,19 @@ type Props<T extends FieldValues> = {
 
 
 export default function LocationInput<T extends FieldValues>(props: Props<T>) {
-    const { field, fieldState } = useController({ ...props });
+    const {field, fieldState} = useController({...props});
     const [loading, setLoading] = useState(false);
     const [suggestions, setSuggestion] = useState<LocationIQSuggestion[]>([]);
     const [inputValue, setInputValue] = useState(field.value || '');
 
 
-
     useEffect(() => {
-        if(field.value && typeof field.value === 'object') {
+        if (field.value && typeof field.value === 'object') {
             setInputValue(field.value.venue || '');
-        }else {
+        } else {
             setInputValue(field.value || '');
         }
     }, [field.value])
-
 
 
     const locationKey = import.meta.env.VITE_LOCATION_URL;

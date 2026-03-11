@@ -3,8 +3,11 @@ import {Box, ListItemText, MenuItem, MenuList, Paper, Typography} from "@mui/mat
 import 'react-calendar/dist/Calendar.css'
 import Calendar from "react-calendar";
 import '../../../app/layout/style.css';
+import {useStore} from "../../../lib/hooks/useStore.ts";
+import {observer} from "mobx-react-lite";
 
-export default function ActivityFilter() {
+const ActivityFilters = observer(function ActivityFilter() {
+    const {activityStore: {setFilter, setStartDate, filter, startDate}} = useStore();
     return (
         <Box sx={{display: 'flex', flexDirection: 'column', gap: 3, borderRadius: 3}}>
 
@@ -25,13 +28,22 @@ export default function ActivityFilter() {
                     </Typography>
 
                     <MenuList>
-                        <MenuItem>
+                        <MenuItem
+                            selected={filter === 'all'}
+                            onClick={() => setFilter('all')}
+                        >
                             <ListItemText primary="All events"/>
                         </MenuItem>
-                        <MenuItem>
+                        <MenuItem
+                            selected={filter === 'isGoing'}
+                            onClick={() => setFilter('isGoing')}
+                        >
                             <ListItemText primary="I'm going"/>
                         </MenuItem>
-                        <MenuItem>
+                        <MenuItem
+                            selected={filter === 'isHost'}
+                            onClick={() => setFilter('isHost')}
+                        >
                             <ListItemText primary="I'm hosting"/>
                         </MenuItem>
                     </MenuList>
@@ -40,7 +52,7 @@ export default function ActivityFilter() {
             </Paper>
 
             {/* DATE PICKER SECTION */}
-            <Box component={Paper}  sx={{p: 3, borderRadius: 3, width: '100%'}}>
+            <Box component={Paper} sx={{p: 3, borderRadius: 3, width: '100%'}}>
                 <Typography
                     variant="h6"
                     sx={{
@@ -53,8 +65,13 @@ export default function ActivityFilter() {
                     <Event sx={{mr: 1}}/>
                     Select date
                 </Typography>
-                <Calendar className='react-calendar'></Calendar>
+                <Calendar
+                    value={startDate}
+                    onChange={date => setStartDate(date as Date)}
+                    className='react-calendar'></Calendar>
             </Box>
         </Box>
     );
-}
+})
+
+export default ActivityFilters;

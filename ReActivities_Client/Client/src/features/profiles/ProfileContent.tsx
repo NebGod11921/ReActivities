@@ -3,6 +3,7 @@ import {Box, Paper, Tab, Tabs} from "@mui/material";
 import {ProfilePhotos} from "./ProfilePhotos.tsx";
 import ProfileAbout from "./ProfileAbout.tsx";
 import ProfileFollowing from "./ProfileFollowing.tsx";
+import ProfileActivities from "./ProfileActivities.tsx";
 
 
 export default function ProfileContent() {
@@ -12,25 +13,26 @@ export default function ProfileContent() {
     }
     const tabContent = [
         {label: 'About', content: <ProfileAbout/>},
-        {label: 'Photos', content: <ProfilePhotos />},
-        {label: 'Events', content: <div>Events</div>},
+        {label: 'Photos', content: <ProfilePhotos/>},
+        {label: 'Events', content: <ProfileActivities></ProfileActivities>},
         {label: 'Followers', content: <ProfileFollowing activeTab={value}></ProfileFollowing>},
         {label: 'Following', content: <ProfileFollowing activeTab={value}></ProfileFollowing>},
     ]
 
     return (
-        <Box component={Paper} mt={2} p={3} elevation={3} height={500} sx={{display: 'flex', alignItems: 'flex-start', borderRadius: 3}}>
+        <Box component={Paper} mt={2} p={3} elevation={3} height={500}
+             sx={{display: 'flex', alignItems: 'flex-start', borderRadius: 3}}>
             <Tabs orientation='vertical'
-                value={value}
+                  value={value}
                   variant="scrollable"
-                 onChange={handleChange}
-                 sx={{ borderRight: 1, height: 450, minWidth: 200, color: 'whitesmoke'}}
+                  onChange={handleChange}
+                  sx={{borderRight: 1, height: 450, minWidth: 200, color: 'whitesmoke'}}
             >
                 {tabContent.map((tab, index) => (
-                    <Tab key={index} label={tab.label} sx={{mr:3}}></Tab>
+                    <Tab key={index} label={tab.label} sx={{mr: 3}}></Tab>
                 ))}
             </Tabs>
-            <Box sx={{flexGrow: 1, p: 3, pt:0}}>
+            <Box sx={{flexGrow: 1, p: 3, pt: 0}}>
                 {tabContent[value].content}
             </Box>
 
