@@ -429,7 +429,10 @@ FodyWeavers.xsd
 ReActivities_Client/Client/.env.development
 ReActivities/API/reactivities.db-wal
 ReActivities/API/reactivities.db-shm
-
+ReActivities_Client/Client/.env.production
+.env.production
+.appsettings.development.json
+.appsetiongs.json
 
 #ingore .appsettings files
 **/appsettings.json
