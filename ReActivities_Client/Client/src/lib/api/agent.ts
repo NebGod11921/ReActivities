@@ -18,59 +18,60 @@ agent.interceptors.request.use(config => {
     store.uiStore.isBusy();
     return config;
 })
-    // try {
-    //     await sleep(1000);
-    //
-    //     return response;
-    //
-    // }catch (error) {
-    //     console.log('axios error:' + error);
-    //     return Promise.reject(error);
-    // } finally {
-    //     store.uiStore.isIdle();
-    // }
+// try {
+//     await sleep(1000);
+//
+//     return response;
+//
+// }catch (error) {
+//     console.log('axios error:' + error);
+//     return Promise.reject(error);
+// } finally {
+//     store.uiStore.isIdle();
+// }
 
-    agent.interceptors.response.use(async response => {
-            await sleep(1000);
-            store.uiStore.isIdle();
-            return response;
-        },
-        async error => {
-            await sleep(1000);
-            store.uiStore.isIdle();
+agent.interceptors.response.use(async response => {
+        if (import.meta.env.DEV) await sleep(1000);
 
-            const {status, data} = error.response;
-            switch (status) {
-                case 400:
-                    if(data.errors) {
-                        const modalStateErrors = [];
-                        for (const key of data.errors) {
-                            if(data.errors[key]) {
-                                modalStateErrors.push(data.errors[key]);
-                            }
+        store.uiStore.isIdle();
+        return response;
+    },
+    async error => {
+        if (import.meta.env.DEV) await sleep(1000);
+        store.uiStore.isIdle();
+
+        const {status, data} = error.response;
+        switch (status) {
+            case 400:
+                if (data.errors) {
+                    const modalStateErrors = [];
+                    for (const key of data.errors) {
+                        if (data.errors[key]) {
+                            modalStateErrors.push(data.errors[key]);
                         }
-                        throw modalStateErrors.flat();
-                    } else {
-                        toast.error(data);
                     }
-                    break;
-                case 401:
-                    toast.error('Unauthorized');
-                    break;
-                case 404:
-                    await router.navigate('/not-found');
-                    break;
-                case 500:
-                    await router.navigate('/server-error', data);
-                    toast.error('Server Error');
-                    break;
-                default:
-                    break;
-            }
-
-            return Promise.reject(error);
+                    throw modalStateErrors.flat();
+                } else {
+                    toast.error(data);
+                }
+                break;
+            case 401:
+                toast.error('Unauthorized');
+                break;
+            case 404:
+                await router.navigate('/not-found');
+                break;
+            case 500:
+                await router.navigate('/server-error', data);
+                toast.error('Server Error');
+                break;
+            default:
+                break;
         }
-    )
+
+        return Promise.reject(error);
+    }
+)
 
 
 export default agent;

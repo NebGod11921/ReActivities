@@ -1,7 +1,7 @@
 import {Box, Button, Paper, Typography} from "@mui/material";
 import {useActivities} from "../../../lib/hooks/useActivities.ts";
 import {useNavigate, useParams} from "react-router";
-import { useForm} from "react-hook-form";
+import {useForm} from "react-hook-form";
 import {useEffect} from "react";
 import {activitySchema, type ActivitySchema} from "../../../lib/schemas/activitySchema.ts";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -12,11 +12,8 @@ import DateTimeInput from "../../../app/shared/components/DateTimeInput.tsx";
 import LocationInput from "../../../app/shared/components/LocationInput.tsx";
 
 
-
-
-
 export default function ActivityForm() {
-    const { reset, handleSubmit, control} = useForm<ActivitySchema>({
+    const {reset, handleSubmit, control} = useForm<ActivitySchema>({
         mode: 'onTouched',
         resolver: zodResolver(activitySchema),
 
@@ -27,7 +24,7 @@ export default function ActivityForm() {
     const {updateActivity, createActivity, activity, isLoadingActivity} = useActivities(id);
     // const navigate = useNavigate();
     useEffect(() => {
-        if(activity) reset({
+        if (activity) reset({
             ...activity,
             location: {
                 city: activity.city,
@@ -35,38 +32,38 @@ export default function ActivityForm() {
                 latitude: activity.latitude,
                 longitude: activity.longitude
             }
-        }) ;
+        });
     }, [activity, reset]);
 
 
-    const onSubmit= async  (data: ActivitySchema) => {
+    const onSubmit = async (data: ActivitySchema) => {
         const {location, ...rest} = data;
-        const flattenedData = {...rest, ...location, };
+        const flattenedData = {...rest, ...location,};
         try {
 
-            if(activity) {
+            if (activity) {
                 updateActivity.mutate(
-                    { ...activity, ...flattenedData },
+                    {...activity, ...flattenedData},
                     {
                         onSuccess: () => navigate(`/Activities/${activity.id}`),
                     }
                 );
             } else {
 
-                createActivity.mutate(flattenedData as Activity, {
+                createActivity.mutate(flattenedData, {
                     onSuccess: (id) => navigate(`/Activities/${id}`),
                     onError: (err) => console.error(err),
                 });
             }
 
 
-        }catch (error) {
+        } catch (error) {
             console.log(error);
         }
 
 
     }
-    if(isLoadingActivity) {
+    if (isLoadingActivity) {
         return <Typography>Loading...</Typography>;
     }
 
@@ -98,12 +95,6 @@ export default function ActivityForm() {
                 <LocationInput control={control} label="Enter the location" name='location'></LocationInput>
 
 
-
-
-
-
-
-
                 {/*<TextField {...register('description')}  label='Description' defaultValue={activity?.description} multiline rows={3}> </TextField>*/}
                 {/*<TextField {...register('category')} label='Category' defaultValue={activity?.category}></TextField>*/}
                 {/*<TextField {...register('date')} label='Date' type='date'*/}
@@ -113,10 +104,11 @@ export default function ActivityForm() {
                 {/*<TextField {...register('city')} label='City' defaultValue={activity?.city}></TextField>*/}
                 {/*<TextField {...register('venue')} label='Venue' defaultValue={activity?.venue}></TextField>*/}
                 <Box display='flex' justifyContent='end' gap={3}>
-                        <Button onClick={() => {}} color='inherit'>Cancel</Button>
-                        <Button type="submit" color='success' variant='contained'
-                                disabled={updateActivity.isPending || createActivity.isPending}
-                        >Submit</Button>
+                    <Button onClick={() => {
+                    }} color='inherit'>Cancel</Button>
+                    <Button type="submit" color='success' variant='contained'
+                            disabled={updateActivity.isPending || createActivity.isPending}
+                    >Submit</Button>
                 </Box>
             </Box>
         </Paper>

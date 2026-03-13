@@ -4,6 +4,8 @@ import {useLocation} from "react-router";
 import {useAccount} from "./useAccount.ts";
 import {useStore} from "./useStore.ts";
 
+import type {FieldValues} from "react-hook-form";
+
 //optional
 export const useActivities = (id?: string) => {
     const queryClient = useQueryClient();
@@ -109,7 +111,7 @@ export const useActivities = (id?: string) => {
 
 
     const createActivity = useMutation({
-        mutationFn: async (activity: Activity) => {
+        mutationFn: async (activity: FieldValues) => {
             const response = await agent.post(`/Activities/`, activity);
             return response.data;
         },

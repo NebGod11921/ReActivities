@@ -34,7 +34,7 @@ builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 
 builder.Services.AddDbContext<AppDbContext>(opt => 
 {
-    opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddCors(options =>
 {
@@ -109,10 +109,15 @@ app.UseCors("AllowReactApp");
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+
 app.MapControllers();
 
 app.MapGroup("api").MapIdentityApi<User>().RequireCors("AllowReactApp"); //api//login
 app.MapHub<CommentHub>("/comments");
+app.MapFallbackToController("Index", "Fallback"); // fallback cho react router
 
 
 
