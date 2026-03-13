@@ -104,8 +104,7 @@ export default function ActivityForm() {
                 {/*<TextField {...register('city')} label='City' defaultValue={activity?.city}></TextField>*/}
                 {/*<TextField {...register('venue')} label='Venue' defaultValue={activity?.venue}></TextField>*/}
                 <Box display='flex' justifyContent='end' gap={3}>
-                    <Button onClick={() => {
-                    }} color='inherit'>Cancel</Button>
+                    <Button  onClick={() => navigate(-1)} color='inherit'>Cancel</Button>
                     <Button type="submit" color='success' variant='contained'
                             disabled={updateActivity.isPending || createActivity.isPending}
                     >Submit</Button>

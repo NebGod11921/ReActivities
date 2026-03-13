@@ -33,7 +33,7 @@ export const useActivities = (id?: string) => {
             console.log(response.data)
             return response.data;
         },
-        staleTime: 1000 * 60 * 5,
+
         placeholderData: keepPreviousData,
         initialPageParam: null,
         getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -100,11 +100,11 @@ export const useActivities = (id?: string) => {
 
     const updateActivity = useMutation({
         mutationFn: async (activity: Activity) => {
-            await agent.put(`/Activities/`, activity);
+            await agent.put(`/Activities/${activity.id}`, activity);
         },
         onSuccess: async () => {
             await queryClient.invalidateQueries({
-                queryKey: ['activities']
+                queryKey: ['activities', activity?.id]
             });
         }
     })
