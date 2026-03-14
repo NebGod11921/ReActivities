@@ -18,7 +18,7 @@ jobs:
 
 
 
-      # ✅ Add Node.js and React build
+      # Add Node.js and React build
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -34,7 +34,14 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.x'
+      - name: Copy wwwroot to Server API
+        run: | 
+            mkdir -p ReActivities/API/bin/Publish/wwwroot
+            cp -r ReActivities_Client/API/wwwroot/. ReActivities/API/bin/Publish/wwwroot
 
+
+
+      
       - name: Build with dotnet
         run: dotnet build --configuration Release
         working-directory: ./ReActivities/API  
