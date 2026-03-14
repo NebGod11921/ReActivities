@@ -26,10 +26,7 @@
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
 
-	<ItemGroup>
-		<Content Include="wwwroot\**\*" CopyToPublishDirectory="PreserveNewest" />
-	</ItemGroup>
-	
+
 	
 	
 </Project>
