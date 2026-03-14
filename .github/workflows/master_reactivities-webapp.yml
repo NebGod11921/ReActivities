@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
+    
 
 
 
@@ -35,9 +35,8 @@ jobs:
         with:
           dotnet-version: '9.x'
       - name: Copy wwwroot to Server API
-        run: | 
-            mkdir -p ReActivities/API/bin/Publish/wwwroot
-            cp -r ReActivities_Client/API/wwwroot/. ReActivities/API/bin/Publish/wwwroot
+        run: |
+          xcopy /E /I /Y "ReActivities_Client\API\wwwroot" "ReActivities\API\wwwroot"
 
 
 
