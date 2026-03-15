@@ -7,6 +7,7 @@ using Application.Core;
 using Application.Interfaces;
 using Domain;
 using FluentValidation;
+using Infrastructure.Email;
 using Infrastructure.Interfaces;
 using Infrastructure.Photos;
 using Infrastructure.Security;
@@ -16,6 +17,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Resend;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -67,6 +69,17 @@ builder.Services.AddMediatR(
 
 
     });
+builder.Services.AddHttpClient<ResendClient>();
+builder.Services.Configure<ResendClientOptions>(opts =>
+{
+    opts.ApiToken = builder.Configuration["Resend:ApiToken"]!;
+
+});
+builder.Services.AddTransient<IResend, ResendClient>();
+builder.Services.AddTransient<IEmailSender<User>, EmailSender>();
+
+
+
 builder.Services.AddAutoMapper(
     typeof(GetActivityList).Assembly);
 //Validations
@@ -77,6 +90,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateActivityValidator>();
 builder.Services.AddIdentityApiEndpoints<User>(opt =>
 {
     opt.User.RequireUniqueEmail = true;
+    opt.SignIn.RequireConfirmedEmail = true;
 
 }).AddRoles<IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 

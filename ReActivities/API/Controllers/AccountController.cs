@@ -3,10 +3,14 @@ using Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace API.Controllers
 {
-    public class AccountController(SignInManager<User> signIn) : BaseApiController
+    public class AccountController(SignInManager<User> signIn, IEmailSender<User> 
+        emailSender, IConfiguration config) : BaseApiController
     {
         [AllowAnonymous]
         [HttpPost("register")]
@@ -22,8 +26,11 @@ namespace API.Controllers
             var result = await signIn.UserManager.CreateAsync(user, registerDTO.Password);
 
 
-            if (result.Succeeded == true)
+            if (result.Succeeded)
             {
+                await SendConfirmationEmailAsync(user, registerDTO.Email);
+
+
                 return Ok("User registered successfully.");
             }
 
@@ -33,6 +40,31 @@ namespace API.Controllers
             }
 
             return ValidationProblem();
+        }
+
+        [AllowAnonymous]
+        [HttpGet("resendConfirmEmail")]
+        public async Task<ActionResult> ResendConfirmationEmail(string email)
+        {
+            var user = await signIn.UserManager.Users
+                .FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null) return BadRequest("Invalid email");
+            await SendConfirmationEmailAsync(user, email);
+            return Ok();
+
+        }
+
+
+
+        private async Task SendConfirmationEmailAsync(User user, string email)
+        {
+            var code = await signIn.UserManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+            var confirmEmailUrl = $"{config["ClientAppUrl"]}/confirm-email?userId={user.Id}&code={code}";
+        
+            await emailSender.SendConfirmationLinkAsync(user, email, confirmEmailUrl);
+
         }
 
         [AllowAnonymous]

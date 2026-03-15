@@ -8,10 +8,12 @@ export default defineConfig({
         chunkSizeWarningLimit: 1500,
         emptyOutDir: true,
     },
-
-
     server: {
         port: 3000,
+
     },
-    plugins: [react()],
+    plugins: [
+        react(),
+
+    ],
 })
