@@ -14,7 +14,7 @@ namespace API.Controllers;
 //(AppDbContext context)
 public class ActivitiesController : BaseApiController
 {
-
+    //
     //No need to inject Mediator cuuz it's already setup in BassicAPIController
 
     //[AllowAnonymous]
