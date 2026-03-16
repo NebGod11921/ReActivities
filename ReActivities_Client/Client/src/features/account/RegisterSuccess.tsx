@@ -20,7 +20,7 @@ export default function RegisterSuccess({email}: Props  ) {
                 <Check sx={{fontSize: 100,color: "primary"}}></Check>
                 <Typography variant="h3"  gutterBottom>You have successfully registered!</Typography>
                 <Typography variant="h3"  gutterBottom>Please check your email to confirm your email</Typography>
-                <Button fullWidth onClick={() => resendConfirmationEmail.mutate(email)}>Re-send Confirmation Email</Button>
+                <Button fullWidth onClick={() => resendConfirmationEmail.mutate({email})}>Re-send Confirmation Email</Button>
             </Paper>
         </>
 

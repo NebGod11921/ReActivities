@@ -44,12 +44,20 @@ namespace API.Controllers
 
         [AllowAnonymous]
         [HttpGet("resendConfirmEmail")]
-        public async Task<ActionResult> ResendConfirmationEmail(string email)
+        public async Task<ActionResult> ResendConfirmationEmail(string? email, string? userId)
         {
+            if(string.IsNullOrEmpty(email) || string.IsNullOrEmpty(userId))
+                return BadRequest("Email and userId are required");
+
+
+
             var user = await signIn.UserManager.Users
-                .FirstOrDefaultAsync(u => u.Email == email);
-            if (user == null) return BadRequest("Invalid email");
-            await SendConfirmationEmailAsync(user, email);
+                .FirstOrDefaultAsync(u => u.Email == email || u.Id == userId);
+
+            if (user == null || string.IsNullOrEmpty(user.Email))
+                return BadRequest("Invalid email");
+           
+            await SendConfirmationEmailAsync(user, user.Email);
             return Ok();
 
         }
