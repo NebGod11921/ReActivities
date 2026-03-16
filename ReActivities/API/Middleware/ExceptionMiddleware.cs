@@ -8,7 +8,7 @@ namespace API.Middleware
 {
     public class ExceptionMiddleware(ILogger<ExceptionMiddleware> logger, IHostEnvironment env) : IMiddleware
     {
-       
+       //
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             try
