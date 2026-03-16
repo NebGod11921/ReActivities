@@ -27,6 +27,8 @@ jobs:
       - name: Build React Client
         run: |
           cd ReActivities_Client/Client
+          echo "VITE_API_URL=/api" > .env.production
+          echo "VITE_COMMENTS_URL=/comments" >> .env.production
           npm install
           npm run build
 
