@@ -29,8 +29,6 @@ export default function LoginForm() {
             toast.error('Problem sending email - please check email address' + error);
         }
 
-
-
     }
 
 

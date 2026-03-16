@@ -43,7 +43,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowReactApp",
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000","https://localhost:3000")
+            policy.WithOrigins("http://localhost:3000","https://localhost:3000", "https://reactivities-webapp-fugxfwfsffhvd4ds.japaneast-01.azurewebsites.net")
                   .AllowAnyHeader()
                   .AllowAnyMethod()
                   .AllowCredentials();
