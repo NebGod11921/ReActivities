@@ -28,15 +28,13 @@ namespace Infrastructure.Email
         public async Task SendPasswordResetCodeAsync(User user, string email, string resetCode)
         {
             var subject = "Reset your password";
-            //resetCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(resetCode));
+            
             var body = $@"
                 <p>Hi {user.DisplayName},</p>
                 <p>Please click this link to reset your password</p>
                 <p><a href='{config["ClientAppUrl"]}/reset-password?email={email}&code={resetCode}'>Click to reset your password</a></p>
                 <p>Thanks</p>
                 <p>IF you did not request this, you can ignore this email</p>
-
-
             ";
             await SendMailAsync(email, subject, body);
         }
