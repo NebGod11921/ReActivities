@@ -28,7 +28,7 @@ namespace Infrastructure.Email
         public async Task SendPasswordResetCodeAsync(User user, string email, string resetCode)
         {
             var subject = "Reset your password";
-            resetCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(resetCode));
+            //resetCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(resetCode));
             var body = $@"
                 <p>Hi {user.DisplayName},</p>
                 <p>Please click this link to reset your password</p>
