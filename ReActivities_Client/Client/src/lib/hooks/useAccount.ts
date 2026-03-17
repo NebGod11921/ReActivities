@@ -73,13 +73,13 @@ export const useAccount = () => {
 
     const forgotPassword = useMutation({
         mutationFn: async (email : string) => {
-            await agent.post(`/forgotPassword`, {email})
+            await agent.post(`/forgotPassword`, email)
         },
     })
 
     const resetPassword = useMutation({
         mutationFn: async (data : ResetPassword) => {
-            await agent.post(`/resetPassword`, {data})
+            await agent.post(`/resetPassword`, data)
         }
     })
 

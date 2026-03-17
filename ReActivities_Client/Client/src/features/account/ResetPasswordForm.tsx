@@ -16,12 +16,15 @@ export default function ResetPasswordForm() {
     const email = params.get('email');
     const code = params.get('code');
 
-    if(!email || !code) return <Typography>Invalid reset password code</Typography>;
+    const decodedCode = code ? code.replace(/ /g, '+') : null;
+
+
+    if(!email || !decodedCode) return <Typography>Invalid reset password code</Typography>;
 
 
     const onSubmit = async(data: ResetPasswordSchema)=> {
         try {
-            await resetPassword.mutateAsync({email, resetCode: code, newPassword: data.newPassword}, {
+            await resetPassword.mutateAsync({email, resetCode: decodedCode, newPassword: data.newPassword}, {
                 onSuccess: () => {
                     toast.success('Password reset successfully - you can now sign in');
                     navigate('/login');
