@@ -1,5 +1,6 @@
 ﻿using Domain;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Resend;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Email
 {
-    public class EmailSender(IServiceScopeFactory scopeFactory) : IEmailSender<User>
+    public class EmailSender(IServiceScopeFactory scopeFactory, IConfiguration config) : IEmailSender<User>
     {
         public async Task SendConfirmationLinkAsync(User user, string email, string confirmationLink)
         {
@@ -23,10 +24,21 @@ namespace Infrastructure.Email
             await SendMailAsync(email, subject, body);
         }
 
-        public Task SendPasswordResetCodeAsync(User user, string email, string resetCode)
+        public async Task SendPasswordResetCodeAsync(User user, string email, string resetCode)
         {
-            throw new NotImplementedException();
+            var subject = "Reset your password";
+            var body = $@"
+                <p>Hi {user.DisplayName},</p>
+                <p>Please click this link to reset your password/p>
+                <p><a href='{config["ClientAppUrl"]}/resetPassword?email={email}&code={resetCode}'>Click to reset your password</a></p>
+                <p>Thanks</p>
+                <p>IF you did not request this, you can ignore this email</p>
+
+
+            ";
+            await SendMailAsync(email, subject, body);
         }
+        
 
         public Task SendPasswordResetLinkAsync(User user, string email, string resetLink)
         {
@@ -47,7 +59,7 @@ namespace Infrastructure.Email
             Console.WriteLine(message.HtmlBody);
 
             await resendClient.EmailSendAsync(message);
-            //await Task.CompletedTask;
+            //await Task.CompletedTask; //for testing without sending email
         }
     }
 }

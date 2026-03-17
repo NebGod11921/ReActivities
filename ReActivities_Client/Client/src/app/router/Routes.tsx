@@ -13,6 +13,9 @@ import RequiredAuth from "./RequiredAuth.tsx";
 import RegisterForm from "../../features/account/RegisterForm.tsx";
 import ProfilePage from "../../features/profiles/ProfilePage.tsx";
 import VerifyEmail from "../../features/account/VerifyEmail.tsx";
+import ChangePasswordForm from "../../features/account/ChangePasswordForm.tsx";
+import ForgotPasswordForm from "../../features/account/ForgotPasswordForm.tsx";
+import ResetPasswordForm from "../../features/account/ResetPasswordForm.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -25,6 +28,7 @@ export const router = createBrowserRouter([
                     {path: 'activities/:id', element:<ActivityDetailPage></ActivityDetailPage>},
                     {path: 'manage/:id', element:<ActivityForm></ActivityForm>},
                     {path: 'profile/:id', element:<ProfilePage></ProfilePage>},
+                    {path: 'change-password', element:<ChangePasswordForm></ChangePasswordForm>},
                 ]},
             {path: '', element:<HomePage></HomePage>},
             {path: 'counter', element:<Counter></Counter>},
@@ -34,6 +38,8 @@ export const router = createBrowserRouter([
             {path: 'login', element:<LoginForm></LoginForm>},
             {path: 'register', element:<RegisterForm></RegisterForm>},
             {path: 'confirm-email', element:<VerifyEmail></VerifyEmail>},
+            {path: 'forgot-password', element:<ForgotPasswordForm></ForgotPasswordForm>},
+            {path: 'reset-password', element:<ResetPasswordForm></ResetPasswordForm>},
             {path: '*', element: <Navigate replace to='/not-found'></Navigate>}
         ]
     }
