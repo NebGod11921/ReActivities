@@ -36,6 +36,9 @@ export default function LoginForm() {
     const loginWithGitHub = () => {
         const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
         const redirectUrl = import.meta.env.VITE_REDIRECT_URL;
+
+        console.log("redirectUrl", redirectUrl);
+        console.log("clientId", clientId);
         window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_Uri=${redirectUrl}&scope=read:user user:email`;
     }
 
