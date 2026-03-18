@@ -3,7 +3,7 @@ import {useAccount} from "../../lib/hooks/useAccount.ts";
 import {LoginSchema} from "../../lib/schemas/loginSchema.ts";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Box, Button, Paper, Typography} from "@mui/material";
-import { LockOpen } from "@mui/icons-material";
+import {GitHub, LockOpen } from "@mui/icons-material";
 import TextInput from "../../app/shared/components/TextInput.tsx";
 import {Link, useLocation, useNavigate} from "react-router";
 import {useState} from "react";
@@ -29,6 +29,11 @@ export default function LoginForm() {
             toast.error('Problem sending email - please check email address' + error);
         }
 
+    }
+    const loginWithGitHub = () => {
+        const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID;
+        const redirectUrl = import.meta.env.VITE_REDIRECT_URL;
+        window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_Uri=${redirectUrl}&scope=read:user user:email`;
     }
 
 
@@ -63,6 +68,17 @@ export default function LoginForm() {
             <TextInput label='Password' type='password' name='password' control={control}></TextInput>
             <Button type='submit' disabled={!isValid || isSubmitting} variant='contained' size='large'>
                 Login
+            </Button>
+            <Button onClick={loginWithGitHub}
+                    startIcon={<GitHub></GitHub>}
+                    sx={{backgroundColor: 'black'}}
+                    type="button"
+                    variant='contained'
+                    size='large'
+
+
+            >
+                Login with GitHub
             </Button>
             {notVerified ? (
                 <Box display='flex' flexDirection='column' justifyContent='center'>

@@ -16,6 +16,7 @@ import VerifyEmail from "../../features/account/VerifyEmail.tsx";
 import ChangePasswordForm from "../../features/account/ChangePasswordForm.tsx";
 import ForgotPasswordForm from "../../features/account/ForgotPasswordForm.tsx";
 import ResetPasswordForm from "../../features/account/ResetPasswordForm.tsx";
+import AuthCallback from "../../features/account/AuthCallback.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -40,6 +41,7 @@ export const router = createBrowserRouter([
             {path: 'confirm-email', element:<VerifyEmail></VerifyEmail>},
             {path: 'forgot-password', element:<ForgotPasswordForm></ForgotPasswordForm>},
             {path: 'reset-password', element:<ResetPasswordForm></ResetPasswordForm>},
+            {path: 'auth-callback', element:<AuthCallback></AuthCallback>},
             {path: '*', element: <Navigate replace to='/not-found'></Navigate>}
         ]
     }
