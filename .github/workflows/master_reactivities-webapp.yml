@@ -25,6 +25,10 @@ jobs:
           node-version: '22'
 
       - name: Build React Client
+        shell: bash
+        env:
+            VITE_GITHUB_CLIENT_ID: ${{ secrets.VITE_GITHUB_CLIENT_ID }}
+            VITE_REDIRECT_URL: ${{ secrets.VITE_REDIRECT_URL }}
         run: |
           cd ReActivities_Client/Client
           echo "VITE_API_URL=/api" > .env.production
