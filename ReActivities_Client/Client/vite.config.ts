@@ -16,4 +16,10 @@ export default defineConfig({
         react(),
 
     ],
+    define: {
+        'import.meta.env.VITE_GITHUB_CLIENT_ID':
+            JSON.stringify(process.env.VITE_GITHUB_CLIENT_ID),
+        'import.meta.env.VITE_REDIRECT_URL':
+            JSON.stringify(process.env.VITE_REDIRECT_URL),
+    }
 })
