@@ -26,13 +26,13 @@ jobs:
 
       - name: Build React Client
         shell: bash
-        env:
-            VITE_GITHUB_CLIENT_ID: ${{ secrets.VITE_GITHUB_CLIENT_ID }}
-            VITE_REDIRECT_URL: ${{ secrets.VITE_REDIRECT_URL }}
+        
         run: |
           cd ReActivities_Client/Client
           echo "VITE_API_URL=/api" > .env.production
           echo "VITE_COMMENTS_URL=/comments" >> .env.production
+          echo "VITE_GITHUB_CLIENT_ID=${VITE_GITHUB_CLIENT_ID}" >> .env.production
+          echo "VITE_REDIRECT_URL=https://reactivities-webapp-fugxfwfsffhvd4ds.japaneast-01.azurewebsites.net/auth-callback" >> .env.production
           npm install
           npm run build
 
