@@ -30,8 +30,8 @@ namespace API.Controllers
                 new GitHubAuthRequest
                 {
                     Code = code,
-                    ClientId = config["Authenticaiton:GitHub:ClientId"]!,
-                    ClientSecret = config["Authenticaiton:GitHub:ClientSecret"]!,
+                    ClientId = config["Authentication:GitHub:ClientId"]!,
+                    ClientSecret = config["Authentication:GitHub:ClientSecret"]!,
                     RedirectUri = $"{config["ClientAppUrl"]}/auth-callback"
                 });
 
