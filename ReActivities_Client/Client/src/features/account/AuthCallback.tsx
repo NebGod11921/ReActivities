@@ -19,7 +19,7 @@ export default function AuthCallback() {
         fetched.current = true;
 
         fetchGithubToken.mutateAsync(code)
-            .then(() => navigate("/Activities"))
+            .then(() => navigate("/activities"))
             .catch(err => {
                 console.log(err);
                 setLoading(false);

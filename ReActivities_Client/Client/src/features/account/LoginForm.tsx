@@ -9,6 +9,7 @@ import {Link, useLocation, useNavigate} from "react-router";
 import {useState} from "react";
 import {toast} from "react-toastify";
 
+
 export default function LoginForm() {
     const [notVerified, setNotVerified] = useState(false);
     const {loginUser, resendConfirmationEmail} =useAccount();
@@ -16,7 +17,11 @@ export default function LoginForm() {
     const location = useLocation();
     const {control, watch, handleSubmit, formState: {isValid, isSubmitting}} = useForm<LoginSchema>({
         mode: 'onTouched',
-        resolver: zodResolver(LoginSchema)
+        resolver: zodResolver(LoginSchema),
+        defaultValues: {
+            email: "",
+            password: ""
+        },
     });
 
     const email = watch('email')

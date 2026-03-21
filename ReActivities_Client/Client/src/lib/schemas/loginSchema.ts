@@ -1,8 +1,10 @@
-import z from "zod";
+import {z} from "zod";
+import {requiredString} from "../utils/utils.tsx";
+
 
 export const LoginSchema = z.object({
-    email: z.string().email(),
-    password: z.string()
+    email: requiredString("Email"),
+    password: requiredString("Password"),
 })
 
 export type LoginSchema = z.infer<typeof LoginSchema>
