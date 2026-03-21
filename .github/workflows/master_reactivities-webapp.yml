@@ -30,6 +30,13 @@ jobs:
           VITE_GITHUB_CLIENT_ID: ${{ secrets.VITE_GITHUB_CLIENT_ID }}
         run: |
           cd ReActivities_Client/Client
+          if [ -z "${VITE_GITHUB_CLIENT_ID}" ]; then
+            echo "❌ VITE_GITHUB_CLIENT_ID is EMPTY or NOT SET"
+          else
+            echo "✅ VITE_GITHUB_CLIENT_ID is set (length: ${#VITE_GITHUB_CLIENT_ID})"
+          fi
+
+          
           echo "VITE_API_URL=/api" > .env.production
           echo "VITE_COMMENTS_URL=/comments" >> .env.production
           echo "VITE_GITHUB_CLIENT_ID=${VITE_GITHUB_CLIENT_ID}" >> .env.production
