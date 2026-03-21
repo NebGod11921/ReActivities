@@ -1,7 +1,7 @@
 import {Box, Button, Paper, Typography} from "@mui/material";
 import {useActivities} from "../../../lib/hooks/useActivities.ts";
 import {useNavigate, useParams} from "react-router";
-import {useForm} from "react-hook-form";
+import {type Resolver, useForm} from "react-hook-form";
 import {useEffect} from "react";
 import {activitySchema, type ActivitySchema} from "../../../lib/schemas/activitySchema.ts";
 import {zodResolver} from "@hookform/resolvers/zod";
@@ -15,8 +15,19 @@ import LocationInput from "../../../app/shared/components/LocationInput.tsx";
 export default function ActivityForm() {
     const {reset, handleSubmit, control} = useForm<ActivitySchema>({
         mode: 'onTouched',
-        resolver: zodResolver(activitySchema),
-
+        resolver: zodResolver(activitySchema) as Resolver<ActivitySchema>,
+        defaultValues: {
+            title: "",
+            description: "",
+            category: "",
+            date: new Date(),
+            location: {
+                venue: "",
+                city: "",
+                latitude: 0,
+                longitude: 0,
+            }
+        }
 
     });
     const navigate = useNavigate();

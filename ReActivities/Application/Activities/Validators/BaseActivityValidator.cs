@@ -18,8 +18,8 @@ namespace Application.Activities.Validators
                .MaximumLength(100).WithMessage("Title must not exceed 100 characters");
             RuleFor(x => selector(x).Description)
                 .NotEmpty().WithMessage("Description is required");
-            RuleFor(x => selector(x).Date)
-                .Must(date => date > DateTime.UtcNow).WithMessage("Date is required");
+            RuleFor(x => selector(x).Date).NotEmpty().WithMessage("Date is required")
+                .Must(date => date > DateTime.UtcNow).WithMessage("Date must be in the future");
             RuleFor(x => selector(x).Category)
                 .NotEmpty().WithMessage("Category is required");
             RuleFor(x => selector(x).City)

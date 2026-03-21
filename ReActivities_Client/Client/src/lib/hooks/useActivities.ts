@@ -168,6 +168,12 @@ export const useActivities = (id?: string) => {
             })
             return {preActivity};
         },
+        onSuccess: async (_, activityId) => {
+            await queryClient.invalidateQueries({
+                queryKey: ['activities', activityId, currentUser?.id]
+            });
+        }
+        ,
         onError: (error, activityId, context) => {
 
             console.log(error);

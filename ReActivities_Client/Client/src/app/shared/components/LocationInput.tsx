@@ -51,12 +51,12 @@ export default function LocationInput<T extends FieldValues>(props: Props<T>) {
     );
 
     const handleChange = (value: string) => {
-        field.onChange(value);
+        setInputValue(value);
         fetchSuggestions(value);
     };
 
     const handleSelect = (location: LocationIQSuggestion) => {
-        const city = location.address.city || location.address.village || location.address.towns
+        const city = location.address.city || location.address.village || location.address.towns || location.address.state || location.address.country || location.address.county || "";
         const venue = location.display_name
         const latitude = Number(location.lat)
         const longitude = Number(location.lon)

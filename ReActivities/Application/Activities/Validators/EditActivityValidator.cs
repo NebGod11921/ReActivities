@@ -16,6 +16,8 @@ namespace Application.Activities.Validators
         {
             RuleFor(x => x.EditActivityDto.Id)
                 .NotEmpty().WithMessage("Id is required");
+            RuleFor(x => x.EditActivityDto.Date)
+                .NotEmpty().WithMessage("Date is required");
         }
     }
 }

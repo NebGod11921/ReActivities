@@ -26,7 +26,6 @@ export default function UserMenu() {
                 color='inherit'
                 size='large'
                 sx={{fontSize: '1.1rem'}}
-
                 onClick={handleClick}
             >
                 <Box display='flex' alignItems='center' gap={2}>
@@ -40,7 +39,7 @@ export default function UserMenu() {
                 aria-labelledby="demo-positioned-button"
                 anchorEl={anchorEl}
                 open={open}
-
+                onClose={handleClose}
                 anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'left',
