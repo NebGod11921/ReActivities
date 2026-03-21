@@ -28,6 +28,7 @@ jobs:
         shell: bash
         env:
           VITE_GITHUB_CLIENT_ID: ${{ secrets.VITE_GITHUB_CLIENT_ID }}
+          VITE_LOCATION_URL: ${{ secrets.VITE_LOCATION_URL }}
         run: |
           cd ReActivities_Client/Client
           if [ -z "${VITE_GITHUB_CLIENT_ID}" ]; then
