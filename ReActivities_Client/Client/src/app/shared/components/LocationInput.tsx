@@ -51,7 +51,7 @@ export default function LocationInput<T extends FieldValues>(props: Props<T>) {
     );
 
     const handleChange = (value: string) => {
-        setInputValue(value);
+        setInputValue(value); //fix bug
         fetchSuggestions(value);
     };
 
